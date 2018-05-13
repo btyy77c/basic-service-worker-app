@@ -1,0 +1,96 @@
+@import 'styles.css';
+@import 'media-queries.css';
+
+/* ====================== Map ====================== */
+#map {
+  height: 50vh;
+  width: 100%;
+}
+
+/* ====================== Restaurant Filtering ====================== */
+.filter-options .responsive {
+  --col-width-large: 49%;
+  --col-width-medium: 48%;
+  --col-width-small: 100%;
+  vertical-align: middle;
+}
+
+.filter-options {
+  background-color: #3397DB;
+  display: block;
+  padding: 5px 10px;
+  margin-top: 10px;
+  text-align: left;
+}
+
+.filter-options * {
+  color: white;
+  display: inline-block;
+  font-size: 1em;
+  margin: auto;
+  vertical-align: middle;
+}
+
+.filter-options .select-boxes {
+  font-size: 0.7em;
+  text-align: right;
+  line-height: 25px;
+}
+
+.filter-options select {
+  background-color: white;
+  border: 1px solid #fff;
+  color: #000;
+  text-align: right;
+}
+
+/* ====================== Restaurant Listing ====================== */
+
+#restaurants-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin: 0;
+  padding: 0;
+}
+
+#restaurants-list .responsive {
+  --col-width-large: 28%;
+  --col-width-medium: 43%;
+  --col-width-small: 100%;
+
+  background-color: #fff;
+  border: 2px solid #ccc;
+  margin: 10px 0;
+  padding: 0 15px 15px;
+}
+
+#restaurants-list .restaurant-img {
+  background-position: center;
+  background-size: cover;
+  height: 248px;
+  width: 100%;
+}
+
+#restaurants-list h3 {
+  width: 100%;
+}
+
+#restaurants-list p {
+  margin: 0;
+  font-size: 0.9em;
+  line-height: 1.5;
+}
+
+#restaurants-list a {
+  background-color: orange;
+  border-bottom: 3px solid #eee;
+  color: #fff;
+  display: inline-block;
+  font-size: 0.8em;
+  margin: 10px 0;
+  padding: 8px 30px 10px;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+}

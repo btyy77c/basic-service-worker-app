@@ -1,0 +1,24 @@
+.responsive {
+   --col-width-large: 100%;
+   --col-width-medium: 100%;
+   --col-width-small: 100%;
+}
+
+.responsive {
+  display: inline-block;
+  width: var(--col-width-small);
+}
+
+/* Medium Screens */
+@media only screen and (min-width: 600px) {
+  .responsive {
+    width: var(--col-width-medium);
+  }
+}
+
+/* Large Screens */
+@media only screen and (min-width: 800px) {
+  .responsive {
+    width: var(--col-width-large);
+  }
+}
