@@ -23,9 +23,9 @@
     </section>
 
     <section>
-      <div class="filter-options">
-        <h4 class='responsive'>Filter Results</h4>
-        <div class='responsive select-boxes'>
+      <div class="filter-options" aria-labelledby="filter-label">
+        <h4 id='filter-label' class='responsive'>Filter Results</h4>
+        <div class='responsive select-boxes' aria-label='filter select options'>
           <select class='responsive' id="neighborhoods-select" name="neighborhoods"
                   onchange="updateRestaurants()">
             <option value="all">All Neighborhoods</option>
@@ -37,7 +37,7 @@
       </div>
 
 
-      <div id="restaurants-list"></div>
+      <div id="restaurants-list" aria-label='list of restaurants'></div>
     </section>
   </main>
 
