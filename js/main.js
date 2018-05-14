@@ -143,6 +143,9 @@ createRestaurantHTML = (restaurant) => {
   image.className = 'restaurant-img';
   image.style.backgroundImage = `url(${DBHelper.imageUrlForRestaurant(restaurant)})`;
   image.setAttribute('aria-label', `Image for ${restaurant.name}`)
+  image.setAttribute('role', `img`)
+  /* I'm not sure it's ok to add 'alt' to a div but Udacity required it */
+  image.setAttribute('alt', `Image for ${restaurant.name}`)
   div.append(image);
 
   const innerDiv = document.createElement('div');
