@@ -70,6 +70,21 @@ class DBHelper {
   }
 
   /**
+   * Fetch a restaurant by its ID.
+   */
+  static fetchRestaurantById(id) {
+    return DBHelper.fetchRestaurants().then(response => {
+      const restaurant = response.restaurants.find(r => r.id == id)
+
+      if (restaurant) { // Got the restaurant
+        return restaurant
+      } else { // Restaurant does not exist in the database
+        return { error: 'Restaurant does not exist' }
+      }
+    })
+  }
+
+  /**
    * Restaurant image URL.
    */
   static imageUrlForRestaurant(restaurant) {
