@@ -8,7 +8,6 @@ const urlsToCache = [
   '/css/media-queries.css',
   '/css/restaurant.css',
   '/css/styles.css',
-  '/data/restaurants.json',
   '/img/1.jpg',
   '/img/2.jpg',
   '/img/3.jpg',

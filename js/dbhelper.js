@@ -7,8 +7,8 @@ class DBHelper {
    * Change this to restaurants.json file location on your server.
    */
   static get DATABASE_URL() {
-    const port = 8000 // Change this to your server port
-    return `http://localhost:${port}/data/restaurants.json`;
+    const port = 1337 // Change this to your server port
+    return `http://localhost:${port}/restaurants`;
   }
 
   /**
@@ -55,9 +55,9 @@ class DBHelper {
     return fetch(DBHelper.DATABASE_URL).then(response => {
       if (response.status == 200) {
         return response.json().then(body => {
-          restaurants.restaurants = body.restaurants
-          restaurants.cuisines = DBHelper.filterCuisines(body.restaurants)
-          restaurants.neighborhoods = DBHelper.filterNeighborhoods(body.restaurants)
+          restaurants.restaurants = body
+          restaurants.cuisines = DBHelper.filterCuisines(body)
+          restaurants.neighborhoods = DBHelper.filterNeighborhoods(body)
           return restaurants
         })
       } else {
@@ -73,14 +73,16 @@ class DBHelper {
    * Fetch a restaurant by its ID.
    */
   static fetchRestaurantById(id) {
-    return DBHelper.fetchRestaurants().then(response => {
-      const restaurant = response.restaurants.find(r => r.id == id)
-
-      if (restaurant) { // Got the restaurant
-        return restaurant
-      } else { // Restaurant does not exist in the database
+    return fetch(`${DBHelper.DATABASE_URL}/${id}`).then(response => {
+      if (response.status == 200) {
+        return response.json().then(body => {
+          return body
+        })
+      } else {
         return { error: 'Restaurant does not exist' }
       }
+    }).catch(error => {
+      return { error: error }
     })
   }
 
@@ -88,7 +90,7 @@ class DBHelper {
    * Restaurant image URL.
    */
   static imageUrlForRestaurant(restaurant) {
-    return (`/img/${restaurant.photograph}`);
+    return (`/img/${restaurant.photograph}.jpg`);
   }
 
   /**
