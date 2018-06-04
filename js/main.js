@@ -10,6 +10,7 @@ var markers = []
  * Initialize Google map, called from HTML.
  */
 window.initMap = () => {
+  console.log('Chrome Sucks!')
   let loc = {
     lat: 40.722216,
     lng: -73.987501
@@ -19,14 +20,9 @@ window.initMap = () => {
     center: loc,
     scrollwheel: false
   })
-}
 
-/**
- * Fetch restaurants, neighborhoods, cuisines, and map as soon as the page is loaded.
- */
-document.addEventListener('DOMContentLoaded', (event) => {
-  fillVariables()
-})
+  // fillVariables()
+}
 
 /**
  * Add markers for current restaurants to the map.

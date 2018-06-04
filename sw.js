@@ -1,6 +1,6 @@
 /* Credit: https://developers.google.com/web/fundamentals/primers/service-workers/  */
 
-const CACHE_NAME = 'restaurant-v1';
+const CACHE_NAME = 'restaurant-v2';
 const urlsToCache = [
   '/',
   '/restaurant.html',
