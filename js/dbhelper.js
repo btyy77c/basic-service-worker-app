@@ -52,6 +52,17 @@ class DBHelper {
   static fetchRestaurants() {
     let restaurants = { restaurants: [], cuisines: [], neighborhoods: [] }
 
+    if ('indexedDB' in window) {
+      return DBHelper._fetchRestaurantsIndexDB(restaurants)
+    } else {
+      return DBHelper._fetchRestaurantsExternal(restaurants)
+    }
+  }
+
+  /**
+   * Obtain restaurants from External Server
+   */
+  static _fetchRestaurantsExternal(restaurants) {
     return fetch(DBHelper.DATABASE_URL).then(response => {
       if (response.status == 200) {
         return response.json().then(body => {
@@ -64,8 +75,19 @@ class DBHelper {
         return restaurants
       }
     }).catch(error => {
-      console.log(error)
       return restaurants
+    })
+  }
+
+  /**
+   * Obtain restaurants from IndexDb
+   */
+  static _fetchRestaurantsIndexDB(restaurants) {
+    // Credit https://developers.google.com/web/ilt/pwa/working-with-indexeddb
+    let dbPromise = idb.open('restaurants', 1, function(upgradeDb) {
+      if (!upgradeDb.objectStoreNames.contains('restaurants')) {
+        upgradeDb.createObjectStore('restaurants', { keyPath: 'all', autoIncrement: true })
+      }
     })
   }
 
