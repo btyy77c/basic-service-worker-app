@@ -4,11 +4,7 @@ var map;
 /**
  * Initialize Google map, called from HTML.
  */
-window.initMap = () => {}
-
-document.addEventListener('DOMContentLoaded', (event) => {
-  fetchRestaurantFromURL()
-})
+window.initMap = () => { fetchRestaurantFromURL() }
 
 /**
  * Create review HTML and add it to the webpage.
