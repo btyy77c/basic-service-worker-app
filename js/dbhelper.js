@@ -30,6 +30,17 @@ class DBHelper {
   }
 
   /**
+   * takes a list of restaurants
+   */
+  static filterRestaurants(restaurants) {
+    let restaurantFilter = { restaurants: [], cuisines: [], neighborhoods: [] }
+    restaurantFilter.restaurants = restaurants
+    restaurantFilter.cuisines = DBHelper.filterCuisines(restaurants)
+    restaurantFilter.neighborhoods = DBHelper.filterNeighborhoods(restaurants)
+    return restaurantFilter
+  }
+
+  /**
    * Filter restaurants by a cuisine and a neighborhood
    */
   static filterRestaurantsByCuisineAndNeighborhood(cuisine, neighborhood, restaurants) {
@@ -50,46 +61,40 @@ class DBHelper {
    * Fetch all restaurants.
    */
   static fetchRestaurants() {
-    let restaurants = { restaurants: [], cuisines: [], neighborhoods: [] }
-
     if ('indexedDB' in window) {
-      return DBHelper._fetchRestaurantsExternal(restaurants)
-      // return DBHelper._fetchRestaurantsIndexDB(restaurants)
+      return DBHelper._fetchRestaurantsIndexDB().then(response => {
+        return DBHelper.filterRestaurants(response)
+      })
     } else {
-      return DBHelper._fetchRestaurantsExternal(restaurants)
+      return DBHelper._fetchRestaurantsExternal().then(response => {
+        return DBHelper.filterRestaurants(response)
+      })
     }
   }
 
   /**
    * Obtain restaurants from External Server
    */
-  static _fetchRestaurantsExternal(restaurants) {
+  static _fetchRestaurantsExternal() {
     return fetch(DBHelper.DATABASE_URL).then(response => {
       if (response.status == 200) {
-        return response.json().then(body => {
-          restaurants.restaurants = body
-          restaurants.cuisines = DBHelper.filterCuisines(body)
-          restaurants.neighborhoods = DBHelper.filterNeighborhoods(body)
-          return restaurants
-        })
-      } else {
-        return restaurants
-      }
-    }).catch(error => {
-      return restaurants
-    })
+        return response.json().then(body => { return body })
+      } else { return [] }
+    }).catch(error => { return [] })
   }
 
   /**
    * Obtain restaurants from IndexDb
    */
-  static _fetchRestaurantsIndexDB(restaurants) {
+  static _fetchRestaurantsIndexDB() {
     // Credit https://developers.google.com/web/ilt/pwa/working-with-indexeddb
-    let dbPromise = idb.open('restaurants', 1, function(upgradeDb) {
+    var dbPromise = indexedDB.open('restaurants', 1, function(upgradeDb) {
       if (!upgradeDb.objectStoreNames.contains('restaurants')) {
-        upgradeDb.createObjectStore('restaurants', { keyPath: 'all', autoIncrement: true })
+        upgradeDb.createObjectStore('restaurants', { keyPath: 'id', autoIncrement: true })
       }
     })
+
+    return DBHelper._fetchRestaurantsExternal(restaurants)
   }
 
   /**
@@ -115,8 +120,7 @@ class DBHelper {
   static imageUrlForRestaurant(restaurant) {
     let imgNumber = Number(restaurant.photograph)
     if (isNaN(imgNumber) || imgNumber < 1 || imgNumber > 10) { imgNumber = 0 }
-    console.log(imgNumber)
-    return (`/img/${imgNumber}.jpg`);
+    return `/img/${imgNumber}.jpg`
   }
 
   /**
