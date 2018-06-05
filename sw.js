@@ -1,5 +1,7 @@
 /* Credit: https://developers.google.com/web/fundamentals/primers/service-workers/  */
 
+
+/*
 const CACHE_NAME = 'restaurant-v2';
 const urlsToCache = [
   '/',
@@ -58,4 +60,4 @@ self.addEventListener('fetch', event => {
         })
       })
     )
-})
+}) */

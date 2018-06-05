@@ -10,7 +10,6 @@ var markers = []
  * Initialize Google map, called from HTML.
  */
 window.initMap = () => {
-  console.log('Chrome Sucks!')
   let loc = {
     lat: 40.722216,
     lng: -73.987501
@@ -21,7 +20,7 @@ window.initMap = () => {
     scrollwheel: false
   })
 
-  // fillVariables()
+  fillVariables()
 }
 
 /**
