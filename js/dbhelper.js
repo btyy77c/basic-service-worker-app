@@ -53,7 +53,8 @@ class DBHelper {
     let restaurants = { restaurants: [], cuisines: [], neighborhoods: [] }
 
     if ('indexedDB' in window) {
-      return DBHelper._fetchRestaurantsIndexDB(restaurants)
+      return DBHelper._fetchRestaurantsExternal(restaurants)
+      // return DBHelper._fetchRestaurantsIndexDB(restaurants)
     } else {
       return DBHelper._fetchRestaurantsExternal(restaurants)
     }
@@ -112,7 +113,10 @@ class DBHelper {
    * Restaurant image URL.
    */
   static imageUrlForRestaurant(restaurant) {
-    return (`/img/${restaurant.photograph}.jpg`);
+    let imgNumber = Number(restaurant.photograph)
+    if (isNaN(imgNumber) || imgNumber < 1 || imgNumber > 10) { imgNumber = 0 }
+    console.log(imgNumber)
+    return (`/img/${imgNumber}.jpg`);
   }
 
   /**
