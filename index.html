@@ -27,11 +27,10 @@
       <div class="filter-options" aria-labelledby="filter-label">
         <h4 id='filter-label' class='responsive'>Filter Results</h4>
         <div class='responsive select-boxes' aria-label='filter select options'>
-          <select class='responsive' id="neighborhoods-select" name="neighborhoods"
-                  onchange="updateRestaurants()">
+          <select class='responsive' id="neighborhoods-select" name="neighborhoods">
             <option value="all">All Neighborhoods</option>
           </select>
-          <select class='responsive' id="cuisines-select" name="cuisines" onchange="updateRestaurants()">
+          <select class='responsive' id="cuisines-select" name="cuisines">
             <option value="all">All Cuisines</option>
           </select>
         </div>
@@ -43,8 +42,7 @@
   </main>
 
   <script type="application/javascript" charset="utf-8" src="js/sw.js"></script>
-  <script type="application/javascript" charset="utf-8" src="js/dbhelper.js"></script>
-  <script type="application/javascript" charset="utf-8" src="js/main.js"></script>
+  <script type="module" charset="utf-8" src="js/main.js"></script>
   <script async defer src="https://maps.googleapis.com/maps/api/js?libraries=places&callback=initMap"></script>
 
   <footer id="footer">

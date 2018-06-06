@@ -1,3 +1,5 @@
+import DBHelper from './dbhelper.js'
+
 let cuisines = []
 let displayRestaurants = []
 let restaurants = []
@@ -21,21 +23,23 @@ window.initMap = () => {
   })
 
   fillVariables()
+  document.getElementById('cuisines-select').addEventListener('change', updateRestaurants)
+  document.getElementById('neighborhoods-select').addEventListener('change', updateRestaurants)
 }
 
 /**
  * Add markers for current restaurants to the map.
  */
-addMarkerToMap = (restaurant) => {
+function addMarkerToMap(restaurant) {
   const marker = DBHelper.mapMarkerForRestaurant(restaurant, map)
   google.maps.event.addListener(marker, 'click', () => { window.location.href = marker.url })
-  self.markers.push(marker)
+  markers.push(marker)
 }
 
 /**
  * Create restaurant HTML.
  */
-createRestaurantHTML = (restaurant) => {
+function createRestaurantHTML(restaurant) {
   const container = document.getElementById('restaurants-list')
   const div = document.createElement('div')
   div.className = 'responsive'
@@ -76,7 +80,7 @@ createRestaurantHTML = (restaurant) => {
 /**
  * Set cuisines HTML.
  */
-fillCuisinesHTML = () => {
+function fillCuisinesHTML() {
   const select = document.getElementById('cuisines-select');
 
   cuisines.forEach(cuisine => {
@@ -90,7 +94,7 @@ fillCuisinesHTML = () => {
 /**
  * Set neighborhoods HTML.
  */
-fillNeighborhoodsHTML = () => {
+function fillNeighborhoodsHTML() {
   const select = document.getElementById('neighborhoods-select');
   neighborhoods.forEach(neighborhood => {
     const option = document.createElement('option');
@@ -103,7 +107,7 @@ fillNeighborhoodsHTML = () => {
 /**
  * Create all restaurants HTML and add them to the webpage.
  */
-fillRestaurantsHTML = () => {
+function fillRestaurantsHTML() {
   resetRestaurants()
   displayRestaurants.forEach(restaurant => { createRestaurantHTML(restaurant) })
 }
@@ -111,7 +115,7 @@ fillRestaurantsHTML = () => {
 /**
  * Update restaurants, cuisines, neighborhoods, and map
  */
-fillVariables = () => {
+function fillVariables() {
   DBHelper.fetchRestaurants().then(response => {
     cuisines = response.cuisines
     neighborhoods = response.neighborhoods
@@ -126,7 +130,7 @@ fillVariables = () => {
 /**
  * Clear current restaurants, their HTML and remove their map markers.
  */
-resetRestaurants = () => {
+function resetRestaurants() {
   const ul = document.getElementById('restaurants-list');
   ul.innerHTML = '';
 
@@ -138,17 +142,20 @@ resetRestaurants = () => {
 /**
  * Update page and map for current restaurants.
  */
-updateRestaurants = () => {
+function updateRestaurants() {
   const cSelect = document.getElementById('cuisines-select');
   const nSelect = document.getElementById('neighborhoods-select');
 
-  const cIndex = cSelect.selectedIndex;
-  const nIndex = nSelect.selectedIndex;
-
-  const cuisine = cSelect[cIndex].value;
-  const neighborhood = nSelect[nIndex].value;
+  const cuisine = cSelect[cSelect.selectedIndex].value;
+  const neighborhood = nSelect[nSelect.selectedIndex].value;
 
   displayRestaurants = DBHelper.
                        filterRestaurantsByCuisineAndNeighborhood(cuisine, neighborhood, restaurants)
   fillRestaurantsHTML()
+}
+
+export default {
+  initMap() {
+    window.initMap()
+  }
 }

@@ -1,49 +1,69 @@
 /**
  * Common database helper functions.
  */
-class DBHelper {
-  /**
-   * Database URL.
-   * Change this to restaurants.json file location on your server.
-   */
-  static get DATABASE_URL() {
-    const port = 1337 // Change this to your server port
-    return `http://localhost:${port}/restaurants`;
-  }
 
+const PORT = 1337
+const DATABASE_URL = `http://localhost:${PORT}/restaurants`
+
+/**
+ * Obtain restaurants from IndexDb
+ */
+const _fetchRestaurantsIndexDB = function() {
+  // Credit https://developers.google.com/web/ilt/pwa/working-with-indexeddb
+  var dbPromise = indexedDB.open('restaurants', 1, function(upgradeDb) {
+    if (!upgradeDb.objectStoreNames.contains('restaurants')) {
+      upgradeDb.createObjectStore('restaurants', { keyPath: 'id', autoIncrement: true })
+    }
+  })
+
+  return _fetchRestaurantsExternal()
+}
+
+/**
+ * Obtain restaurants from External Server
+ */
+const _fetchRestaurantsExternal = function() {
+  return fetch(DATABASE_URL).then(response => {
+    if (response.status == 200) {
+      return response.json().then(body => { return body })
+    } else { return [] }
+  }).catch(error => { return [] })
+}
+
+export default {
   /**
    * Obtain list of cuisines from restaurant
    */
-  static filterCuisines(restaurants) {
+  filterCuisines(restaurants) {
     const cuisines = restaurants.map((v, i) => restaurants[i].cuisine_type)
     // Remove duplicates from cuisines
     return cuisines.filter((v, i) => cuisines.indexOf(v) == i)
-  }
+  },
 
   /**
    * Obtain list of neighborhoods from restaurants
    */
-  static filterNeighborhoods(restaurants) {
+  filterNeighborhoods(restaurants) {
     const neighborhoods = restaurants.map((v, i) => restaurants[i].neighborhood)
     // Remove duplicates from neighborhoods
     return neighborhoods.filter((v, i) => neighborhoods.indexOf(v) == i)
-  }
+  },
 
   /**
-   * takes a list of restaurants
+   * takes a list of restaurants and returns associated cuisines and neighborhoods
    */
-  static filterRestaurants(restaurants) {
+  filterRestaurants(restaurants) {
     let restaurantFilter = { restaurants: [], cuisines: [], neighborhoods: [] }
     restaurantFilter.restaurants = restaurants
-    restaurantFilter.cuisines = DBHelper.filterCuisines(restaurants)
-    restaurantFilter.neighborhoods = DBHelper.filterNeighborhoods(restaurants)
+    restaurantFilter.cuisines = this.filterCuisines(restaurants)
+    restaurantFilter.neighborhoods = this.filterNeighborhoods(restaurants)
     return restaurantFilter
-  }
+  },
 
   /**
    * Filter restaurants by a cuisine and a neighborhood
    */
-  static filterRestaurantsByCuisineAndNeighborhood(cuisine, neighborhood, restaurants) {
+  filterRestaurantsByCuisineAndNeighborhood(cuisine, neighborhood, restaurants) {
     let results = restaurants
 
     if (cuisine != 'all') { // filter by cuisine
@@ -55,53 +75,28 @@ class DBHelper {
     }
 
     return results
-  }
+  },
 
   /**
    * Fetch all restaurants.
    */
-  static fetchRestaurants() {
+  fetchRestaurants() {
     if ('indexedDB' in window) {
-      return DBHelper._fetchRestaurantsIndexDB().then(response => {
-        return DBHelper.filterRestaurants(response)
+      return _fetchRestaurantsIndexDB().then(response => {
+        return this.filterRestaurants(response)
       })
     } else {
-      return DBHelper._fetchRestaurantsExternal().then(response => {
-        return DBHelper.filterRestaurants(response)
+      return _fetchRestaurantsExternal().then(response => {
+        return this.filterRestaurants(response)
       })
     }
-  }
-
-  /**
-   * Obtain restaurants from External Server
-   */
-  static _fetchRestaurantsExternal() {
-    return fetch(DBHelper.DATABASE_URL).then(response => {
-      if (response.status == 200) {
-        return response.json().then(body => { return body })
-      } else { return [] }
-    }).catch(error => { return [] })
-  }
-
-  /**
-   * Obtain restaurants from IndexDb
-   */
-  static _fetchRestaurantsIndexDB() {
-    // Credit https://developers.google.com/web/ilt/pwa/working-with-indexeddb
-    var dbPromise = indexedDB.open('restaurants', 1, function(upgradeDb) {
-      if (!upgradeDb.objectStoreNames.contains('restaurants')) {
-        upgradeDb.createObjectStore('restaurants', { keyPath: 'id', autoIncrement: true })
-      }
-    })
-
-    return DBHelper._fetchRestaurantsExternal(restaurants)
-  }
+  },
 
   /**
    * Fetch a restaurant by its ID.
    */
-  static fetchRestaurantById(id) {
-    return fetch(`${DBHelper.DATABASE_URL}/${id}`).then(response => {
+  fetchRestaurantById(id) {
+    return fetch(`${DATABASE_URL}/${id}`).then(response => {
       if (response.status == 200) {
         return response.json().then(body => {
           return body
@@ -112,36 +107,35 @@ class DBHelper {
     }).catch(error => {
       return { error: error }
     })
-  }
+  },
 
   /**
    * Restaurant image URL.
    */
-  static imageUrlForRestaurant(restaurant) {
+  imageUrlForRestaurant(restaurant) {
     let imgNumber = Number(restaurant.photograph)
     if (isNaN(imgNumber) || imgNumber < 1 || imgNumber > 10) { imgNumber = 0 }
     return `/img/${imgNumber}.jpg`
-  }
+  },
 
   /**
    * Map marker for a restaurant.
    */
-  static mapMarkerForRestaurant(restaurant, map) {
+  mapMarkerForRestaurant(restaurant, map) {
     const marker = new google.maps.Marker({
       position: restaurant.latlng,
       title: restaurant.name,
-      url: DBHelper.urlForRestaurant(restaurant),
+      url: this.urlForRestaurant(restaurant),
       map: map,
-      animation: google.maps.Animation.DROP}
-    );
+      animation: google.maps.Animation.DROP
+    });
     return marker;
-  }
+  },
 
   /**
    * Restaurant page URL.
    */
-  static urlForRestaurant(restaurant) {
+  urlForRestaurant(restaurant) {
     return (`./restaurant.html?id=${restaurant.id}`);
   }
-
 }
