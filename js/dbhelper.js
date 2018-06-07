@@ -1,3 +1,5 @@
+// import idb from './idb/node.js'
+
 /**
  * Common database helper functions.
  */

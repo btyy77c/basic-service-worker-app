@@ -1,3 +1,5 @@
+import DBHelper from './dbhelper.js'
+
 let restaurant;
 var map;
 
@@ -9,7 +11,7 @@ window.initMap = () => { fetchRestaurantFromURL() }
 /**
  * Create review HTML and add it to the webpage.
  */
-createReviewHTML = (review) => {
+function createReviewHTML(review) {
   const li = document.createElement('li');
   const name = document.createElement('p');
   name.innerHTML = review.name;
@@ -33,7 +35,7 @@ createReviewHTML = (review) => {
 /**
  * Get current restaurant from page URL.
  */
-fetchRestaurantFromURL = () => {
+function fetchRestaurantFromURL() {
   if (restaurant) { return } // restaurant already fetched!
 
   const id = new URL(window.location.href).searchParams.get('id')
@@ -53,7 +55,7 @@ fetchRestaurantFromURL = () => {
 /**
  * Add restaurant name to the breadcrumb navigation menu
  */
-fillBreadcrumb = () => {
+function fillBreadcrumb() {
   const breadcrumb = document.getElementById('breadcrumb');
   const li = document.createElement('li');
   li.innerHTML = restaurant.name;
@@ -64,7 +66,7 @@ fillBreadcrumb = () => {
 /**
  * Create restaurant HTML and add it to the webpage
  */
-fillRestaurantHTML = () => {
+function fillRestaurantHTML() {
   const name = document.getElementById('restaurant-name');
   name.innerHTML = restaurant.name;
 
@@ -90,7 +92,7 @@ fillRestaurantHTML = () => {
 /**
  * Create restaurant operating hours HTML table and add it to the webpage.
  */
-fillRestaurantHoursHTML = (operatingHours = restaurant.operating_hours) => {
+function fillRestaurantHoursHTML(operatingHours = restaurant.operating_hours) {
   const hours = document.getElementById('restaurant-hours');
   for (let key in operatingHours) {
     const row = document.createElement('tr');
@@ -110,7 +112,7 @@ fillRestaurantHoursHTML = (operatingHours = restaurant.operating_hours) => {
 /**
  * Create all reviews HTML and add them to the webpage.
  */
-fillReviewsHTML = (reviews = restaurant.reviews) => {
+function fillReviewsHTML(reviews = restaurant.reviews) {
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h2');
   title.innerHTML = 'Reviews';
@@ -132,11 +134,17 @@ fillReviewsHTML = (reviews = restaurant.reviews) => {
 /**
  * Update Map
  */
-setMap = () => {
+function setMap() {
   map = new google.maps.Map(document.getElementById('map'), {
     zoom: 16,
     center: restaurant.latlng,
     scrollwheel: false
   })
   DBHelper.mapMarkerForRestaurant(restaurant, map)
+}
+
+export default {
+  initMap() {
+    window.initMap()
+  }
 }
