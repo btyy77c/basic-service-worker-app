@@ -1,4 +1,4 @@
-// import idb from './idb/node.js'
+import idb from './idb.js'
 
 /**
  * Common database helper functions.
@@ -12,11 +12,23 @@ const DATABASE_URL = `http://localhost:${PORT}/restaurants`
  */
 const _fetchRestaurantsIndexDB = function() {
   // Credit https://developers.google.com/web/ilt/pwa/working-with-indexeddb
-  var dbPromise = indexedDB.open('restaurants', 1, function(upgradeDb) {
+
+  let dbPromise = idb.open('restaurantsDB', 1, function(upgradeDb) {
     if (!upgradeDb.objectStoreNames.contains('restaurants')) {
       upgradeDb.createObjectStore('restaurants', { keyPath: 'id', autoIncrement: true })
     }
   })
+
+  dbPromise.then(response => {
+    console.log(response)
+  })
+
+  /*
+  var dbPromise = indexedDB.open('restaurants', 1, function(upgradeDb) {
+    if (!upgradeDb.objectStoreNames.contains('restaurants')) {
+      upgradeDb.createObjectStore('restaurants', { keyPath: 'id', autoIncrement: true })
+    }
+  }) */
 
   return _fetchRestaurantsExternal()
 }
