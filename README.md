@@ -14,7 +14,7 @@ You have been provided the code for a restaurant reviews website. The code has a
 
 1. run `npm install http-server -g` in your terminal
 2. run `http-server -p 8000` in your terminal
-3. visit localhost:8080 in your browser
+3. visit http://127.0.0.1:8000 in your browser
 
 ### Note about ES6
 

@@ -10,33 +10,21 @@ const DATABASE_URL = `http://localhost:${PORT}/restaurants`
 /**
  * Obtain restaurants from IndexDb
  */
-const _fetchRestaurantsIndexDB = function() {
+function _fetchRestaurantsIndexDB() {
   // Credit https://developers.google.com/web/ilt/pwa/working-with-indexeddb
-
-  let dbPromise = idb.open('restaurantsDB', 1, function(upgradeDb) {
+  let dbPromise = idb.open('restaurantsDB', 1, upgradeDb => {
     if (!upgradeDb.objectStoreNames.contains('restaurants')) {
-      upgradeDb.createObjectStore('restaurants', { keyPath: 'id', autoIncrement: true })
+      let restaurantStore = upgradeDb.createObjectStore('restaurants')
     }
   })
 
-  dbPromise.then(response => {
-    console.log(response)
-  })
-
-  /*
-  var dbPromise = indexedDB.open('restaurants', 1, function(upgradeDb) {
-    if (!upgradeDb.objectStoreNames.contains('restaurants')) {
-      upgradeDb.createObjectStore('restaurants', { keyPath: 'id', autoIncrement: true })
-    }
-  }) */
-
-  return _fetchRestaurantsExternal()
+  return dbPromise
 }
 
 /**
  * Obtain restaurants from External Server
  */
-const _fetchRestaurantsExternal = function() {
+function _fetchRestaurantsExternal() {
   return fetch(DATABASE_URL).then(response => {
     if (response.status == 200) {
       return response.json().then(body => { return body })
@@ -96,8 +84,9 @@ export default {
    */
   fetchRestaurants() {
     if ('indexedDB' in window) {
-      return _fetchRestaurantsIndexDB().then(response => {
-        return this.filterRestaurants(response)
+      return _fetchRestaurantsIndexDB().then(db => {
+        return db.transaction('restaurants').objectStore('restaurants').getAll().
+          then(restaurants => { return this.filterRestaurants(restaurants) })
       })
     } else {
       return _fetchRestaurantsExternal().then(response => {
