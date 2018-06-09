@@ -1,8 +1,6 @@
-import idb from './idb.js'
+/* Common database helper functions. */
 
-/**
- * Common database helper functions.
- */
+import idb from './idb.js'
 
 const PORT = 1337
 const DATABASE_URL = `http://localhost:${PORT}/restaurants`
@@ -12,13 +10,26 @@ const DATABASE_URL = `http://localhost:${PORT}/restaurants`
  */
 function _fetchRestaurantsIndexDB() {
   // Credit https://developers.google.com/web/ilt/pwa/working-with-indexeddb
+
+  let newDB = false // Needed since fetch statments don't work inside idb
+
   let dbPromise = idb.open('restaurantsDB', 1, upgradeDb => {
     if (!upgradeDb.objectStoreNames.contains('restaurants')) {
-      let restaurantStore = upgradeDb.createObjectStore('restaurants')
+      let store = upgradeDb.createObjectStore('restaurants', { keyPath: 'id' })
+      newDB = true
     }
   })
 
-  return dbPromise
+  return dbPromise.then(db => {
+    if (newDB) {
+      return _updateRestaurantsIndexDB()
+    } else {
+      _updateRestaurantsIndexDB()
+      return db.transaction('restaurants').objectStore('restaurants').getAll().then(restaurants => {
+        return restaurants
+      }).catch(error => { return [] })
+    }
+  }).catch(error => { return [] })
 }
 
 /**
@@ -30,6 +41,28 @@ function _fetchRestaurantsExternal() {
       return response.json().then(body => { return body })
     } else { return [] }
   }).catch(error => { return [] })
+}
+
+/**
+ * Creates/Updates Restaurant IndexDb
+ */
+function _updateRestaurantsIndexDB() {
+  return _fetchRestaurantsExternal().then(restaurants => {
+    idb.open('restaurantsDB', 1).then(db => {
+      let tx = db.transaction('restaurants', 'readwrite')
+      let store = tx.objectStore('restaurants')
+      restaurants.forEach(restaurant => {
+        store.put({ id: restaurant.id, address: restaurant.address,
+          cuisine_type: restaurant.cuisine_type, latlng: restaurant.latlng, name: restaurant.name,
+          neighborhood: restaurant.neighborhood, operating_hours: restaurant.operating_hours,
+          photograph: restaurant.photograph, reviews: restaurant.reviews })
+      })
+
+      tx.complete
+    })
+
+    return restaurants
+  })
 }
 
 export default {
@@ -84,9 +117,8 @@ export default {
    */
   fetchRestaurants() {
     if ('indexedDB' in window) {
-      return _fetchRestaurantsIndexDB().then(db => {
-        return db.transaction('restaurants').objectStore('restaurants').getAll().
-          then(restaurants => { return this.filterRestaurants(restaurants) })
+      return _fetchRestaurantsIndexDB().then(response => {
+        return this.filterRestaurants(response)
       })
     } else {
       return _fetchRestaurantsExternal().then(response => {
