@@ -16,7 +16,7 @@
 }
 
 .filter-options {
-  background-color: #3397DB;
+  background-color: #2878af;
   display: block;
   padding: 5px 10px;
   margin-top: 10px;
@@ -74,6 +74,7 @@
 
 #restaurants-list h3 {
   width: 100%;
+  color: #322008;
 }
 
 #restaurants-list p {
@@ -83,9 +84,9 @@
 }
 
 #restaurants-list a {
-  background-color: orange;
+  background-color: #fda429;
   border-bottom: 3px solid #eee;
-  color: #fff;
+  color: #322008;
   display: inline-block;
   font-size: 0.8em;
   margin: 10px 0;

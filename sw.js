@@ -1,28 +1,27 @@
 /* Credit: https://developers.google.com/web/fundamentals/primers/service-workers/  */
 
-
-/*
 const CACHE_NAME = 'restaurant-v2';
+
 const urlsToCache = [
   '/',
-  '/restaurant.html',
   '/css/index.css',
   '/css/media-queries.css',
   '/css/restaurant.css',
   '/css/styles.css',
-  '/img/1.jpg',
-  '/img/2.jpg',
-  '/img/3.jpg',
-  '/img/4.jpg',
-  '/img/5.jpg',
-  '/img/6.jpg',
-  '/img/7.jpg',
-  '/img/8.jpg',
-  '/img/9.jpg',
-  '/img/10.jpg',
-  '/js/dbhelper.js',
+  '/img/db/0.jpg',
+  '/img/db/1.jpg',
+  '/img/db/2.jpg',
+  '/img/db/3.jpg',
+  '/img/db/4.jpg',
+  '/img/db/5.jpg',
+  '/img/db/6.jpg',
+  '/img/db/7.jpg',
+  '/img/db/8.jpg',
+  '/img/db/9.jpg',
+  '/img/db/10.jpg',
+  '/img/icons/icon-192.png',
+  '/img/icons/icon-512.png',
   '/js/main.js',
-  '/js/restaurant_info.js'
 ]
 
 self.addEventListener('install', event => {
@@ -60,4 +59,27 @@ self.addEventListener('fetch', event => {
         })
       })
     )
-}) */
+})
+
+/*
+const urlsToCache = [
+  '/',
+  '/restaurant.html',
+  '/css/index.css',
+  '/css/media-queries.css',
+  '/css/restaurant.css',
+  '/css/styles.css',
+  '/img/1.jpg',
+  '/img/2.jpg',
+  '/img/3.jpg',
+  '/img/4.jpg',
+  '/img/5.jpg',
+  '/img/6.jpg',
+  '/img/7.jpg',
+  '/img/8.jpg',
+  '/img/9.jpg',
+  '/img/10.jpg',
+  '/js/dbhelper.js',
+  '/js/main.js',
+  '/js/restaurant_info.js'
+] */

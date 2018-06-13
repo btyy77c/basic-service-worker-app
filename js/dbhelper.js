@@ -150,7 +150,7 @@ export default {
   imageUrlForRestaurant(restaurant) {
     let imgNumber = Number(restaurant.photograph)
     if (isNaN(imgNumber) || imgNumber < 1 || imgNumber > 10) { imgNumber = 0 }
-    return `/img/${imgNumber}.jpg`
+    return `/img/db/${imgNumber}.jpg`
   },
 
   /**

@@ -1,6 +1,12 @@
 {
-  "short_name": "Basic PWA",
+  "background_color": "#f3f3f3",
+  "display": "standalone",
+  "icons": [
+    { "src": "/img/icons/icon-192.png", "type": "image/png", "sizes": "192x192" },
+    { "src": "/img/icons/icon-512.png", "type": "image/png", "sizes": "512x512" }
+  ],
   "name": "Basic Progressive Web App",
+  "short_name": "Basic PWA",
   "start_url": "/",
-  "display": "standalone"
+  "theme_color": "#fda429"
 }

@@ -11,18 +11,18 @@ body * {
 }
 
 a, a * {
-	color: orange;
+	color: #fda429;
 	text-decoration: none;
 }
 
 a:hover, a:hover *,
 a:focus, a:focus * {
-	color: #3397db;
+	color: #2878af;
 	text-decoration: none;
 }
 
 h1, h2, h3 {
-  color: orange;
+  color: #fda429;
   font-weight: 200;
   text-transform: uppercase;
 }
@@ -53,11 +53,15 @@ main {
 
 #footer {
   background-color: #444;
-  color: #aaa;
+  color: #fff;
   font-size: 0.5em;
   letter-spacing: 1px;
   padding: 25px;
 	margin-top: 30px;
   text-align: center;
   text-transform: uppercase;
+}
+
+#footer strong {
+  color: #fda429;
 }
