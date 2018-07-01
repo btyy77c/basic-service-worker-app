@@ -8,8 +8,15 @@
   <meta name="theme-color" content="#fda429"/>
   <meta name="Description" content="Basic Progressive Web App">
 
+  <!-- Normalize.css for better cross-browser consistency -->
   <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
+  <!-- Main CSS file -->
   <link type="text/css" rel="stylesheet" href="css/index.css">
+
+  <!-- Preloads. Required by Lighthouse -->
+  <link rel="preload" href="idb.js" as="script">
+  <link rel="preload" href="dbhelper.js" as="script">
+
   <link rel="manifest" href="/manifest.json">
   <title>Restaurant Reviews</title>
 </head>
