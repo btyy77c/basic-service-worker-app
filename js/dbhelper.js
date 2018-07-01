@@ -157,6 +157,7 @@ export default {
    * Map marker for a restaurant.
    */
   mapMarkerForRestaurant(restaurant, map) {
+    if (map == null) { return }
     const marker = new google.maps.Marker({
       position: restaurant.latlng,
       title: restaurant.name,

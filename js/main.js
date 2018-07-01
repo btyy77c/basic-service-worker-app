@@ -5,7 +5,7 @@ let displayRestaurants = []
 let restaurants = []
 let neighborhoods = []
 
-var map
+var map = null
 var markers = []
 
 /**
@@ -16,11 +16,14 @@ window.initMap = () => {
     lat: 40.722216,
     lng: -73.987501
   }
-  map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 12,
-    center: loc,
-    scrollwheel: false
-  })
+
+  try {
+    map = new google.maps.Map(document.getElementById('map'), {
+      zoom: 12,
+      center: loc,
+      scrollwheel: false
+    })
+  } catch (error) {}
 
   fillVariables()
   document.getElementById('cuisines-select').addEventListener('change', updateRestaurants)
@@ -31,6 +34,7 @@ window.initMap = () => {
  * Add markers for current restaurants to the map.
  */
 function addMarkerToMap(restaurant) {
+  if (map == null) { return }
   const marker = DBHelper.mapMarkerForRestaurant(restaurant, map)
   google.maps.event.addListener(marker, 'click', () => { window.location.href = marker.url })
   markers.push(marker)
@@ -154,8 +158,4 @@ function updateRestaurants() {
   fillRestaurantsHTML()
 }
 
-export default {
-  initMap() {
-    window.initMap()
-  }
-}
+export default {}
