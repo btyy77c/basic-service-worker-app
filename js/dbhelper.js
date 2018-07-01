@@ -24,12 +24,12 @@ function _fetchRestaurantIndexDB(id) {
     if (newDB) {
       return _updateRestaurantIndexDB(id)
     } else {
-      _updateRestaurantsIndexDB()
-      return db.transaction('restaurants').objectStore('restaurants').getAll().then(restaurants => {
-        return restaurants
-      }).catch(error => { return [] })
+      _updateRestaurantIndexDB(id)
+      return db.transaction('restaurants').objectStore('restaurants').get(id).then(restaurant => {
+        return restaurant
+      }).catch(error => { return _updateRestaurantIndexDB(id) })
     }
-  }).catch(error => { return [] })
+  }).catch(error => { return _updateRestaurantIndexDB(id) })
 }
 
 /**
