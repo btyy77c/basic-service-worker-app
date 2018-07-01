@@ -143,8 +143,15 @@ function setMap() {
   DBHelper.mapMarkerForRestaurant(restaurant, map)
 }
 
-export default {
-  initMap() {
+/**
+ * Sometimes Google Maps fails to load
+ */
+document.addEventListener('DOMContentLoaded', () => {
+  try {
+    google.maps
+  } catch(error) {
     window.initMap()
   }
-}
+})
+
+export default {}

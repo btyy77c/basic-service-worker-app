@@ -6,6 +6,43 @@ const PORT = 1337
 const DATABASE_URL = `http://localhost:${PORT}/restaurants`
 
 /**
+ * Obtain one restaurant from IndexDb
+ */
+function _fetchRestaurantIndexDB(id) {
+  // Credit https://developers.google.com/web/ilt/pwa/working-with-indexeddb
+
+  let newDB = false // Needed since fetch statments don't work inside idb
+
+  let dbPromise = idb.open('restaurantsDB', 1, upgradeDb => {
+    if (!upgradeDb.objectStoreNames.contains('restaurants')) {
+      let store = upgradeDb.createObjectStore('restaurants', { keyPath: 'id' })
+      newDB = true
+    }
+  })
+
+  return dbPromise.then(db => {
+    if (newDB) {
+      return _updateRestaurantIndexDB(id)
+    } else {
+      _updateRestaurantsIndexDB()
+      return db.transaction('restaurants').objectStore('restaurants').getAll().then(restaurants => {
+        return restaurants
+      }).catch(error => { return [] })
+    }
+  }).catch(error => { return [] })
+}
+
+/**
+ * Add?Update Restaurant IndexDb
+ */
+function _addRestaurantToDB(store, restaurant) {
+  store.put({ id: restaurant.id, address: restaurant.address,
+    cuisine_type: restaurant.cuisine_type, latlng: restaurant.latlng, name: restaurant.name,
+    neighborhood: restaurant.neighborhood, operating_hours: restaurant.operating_hours,
+    photograph: restaurant.photograph, reviews: restaurant.reviews })
+}
+
+/**
  * Obtain restaurants from IndexDb
  */
 function _fetchRestaurantsIndexDB() {
@@ -33,6 +70,19 @@ function _fetchRestaurantsIndexDB() {
 }
 
 /**
+ * Obtain one restaurant from External Server
+ */
+function _fetchRestaurantExternal(id) {
+  return fetch(`${DATABASE_URL}/${id}`).then(response => {
+    if (response.status == 200) {
+      return response.json().then(body => { return body })
+    } else {
+      return { error: 'Restaurant does not exist' }
+    }
+  }).catch(error => { return { error: error } })
+}
+
+/**
  * Obtain restaurants from External Server
  */
 function _fetchRestaurantsExternal() {
@@ -44,6 +94,24 @@ function _fetchRestaurantsExternal() {
 }
 
 /**
+ * Creates/Updates One Restaurant in IndexDb
+ */
+function _updateRestaurantIndexDB(id) {
+  return _fetchRestaurantExternal(id).then(restaurant => {
+    if (restaurant.id) {  // don't add bad restaurants to DB
+      idb.open('restaurantsDB', 1).then(db => {
+        let tx = db.transaction('restaurants', 'readwrite')
+        let store = tx.objectStore('restaurants')
+        _addRestaurantToDB(store, restaurant)
+        tx.complete
+      })
+    }
+
+    return restaurant
+  })
+}
+
+/**
  * Creates/Updates Restaurant IndexDb
  */
 function _updateRestaurantsIndexDB() {
@@ -51,13 +119,7 @@ function _updateRestaurantsIndexDB() {
     idb.open('restaurantsDB', 1).then(db => {
       let tx = db.transaction('restaurants', 'readwrite')
       let store = tx.objectStore('restaurants')
-      restaurants.forEach(restaurant => {
-        store.put({ id: restaurant.id, address: restaurant.address,
-          cuisine_type: restaurant.cuisine_type, latlng: restaurant.latlng, name: restaurant.name,
-          neighborhood: restaurant.neighborhood, operating_hours: restaurant.operating_hours,
-          photograph: restaurant.photograph, reviews: restaurant.reviews })
-      })
-
+      restaurants.forEach(restaurant => { _addRestaurantToDB(store, restaurant) })
       tx.complete
     })
 
@@ -131,16 +193,8 @@ export default {
    * Fetch a restaurant by its ID.
    */
   fetchRestaurantById(id) {
-    return fetch(`${DATABASE_URL}/${id}`).then(response => {
-      if (response.status == 200) {
-        return response.json().then(body => {
-          return body
-        })
-      } else {
-        return { error: 'Restaurant does not exist' }
-      }
-    }).catch(error => {
-      return { error: error }
+    return _fetchRestaurantExternal(id).then(restaurant => {
+      return restaurant
     })
   },
 
