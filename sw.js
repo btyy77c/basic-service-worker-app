@@ -21,16 +21,17 @@ const urlsToCache = [
   '/img/db/10.jpg',
   '/img/icons/icon-192.png',
   '/img/icons/icon-512.png',
+  '/js/dbhelper.js',
+  '/js/idb.js',
   '/js/main.js',
+  '/js/restaurant_info.js'
 ]
 
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => {
       return cache.addAll(urlsToCache)
-    }).catch(err => {
-      console.log(err)
-    })
+    }).catch(err => { })
   )
 })
 
@@ -54,26 +55,3 @@ self.addEventListener('fetch', event => {
       })
     )
 })
-
-/*
-const urlsToCache = [
-  '/',
-  '/restaurant.html',
-  '/css/index.css',
-  '/css/media-queries.css',
-  '/css/restaurant.css',
-  '/css/styles.css',
-  '/img/1.jpg',
-  '/img/2.jpg',
-  '/img/3.jpg',
-  '/img/4.jpg',
-  '/img/5.jpg',
-  '/img/6.jpg',
-  '/img/7.jpg',
-  '/img/8.jpg',
-  '/img/9.jpg',
-  '/img/10.jpg',
-  '/js/dbhelper.js',
-  '/js/main.js',
-  '/js/restaurant_info.js'
-] */

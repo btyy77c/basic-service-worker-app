@@ -158,4 +158,16 @@ function updateRestaurants() {
   fillRestaurantsHTML()
 }
 
+
+/**
+ * Sometimes Google Maps fails to load
+ */
+document.addEventListener('DOMContentLoaded', () => {
+  try {
+    google.maps
+  } catch(error) {
+    window.initMap()
+  }
+})
+
 export default {}
