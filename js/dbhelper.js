@@ -6,6 +6,16 @@ const PORT = 1337
 const DATABASE_URL = `http://localhost:${PORT}/restaurants`
 
 /**
+ * Add/Update Restaurant IndexDb
+ */
+function _addRestaurantToDB(store, restaurant) {
+  store.put({ id: restaurant.id, address: restaurant.address,
+    cuisine_type: restaurant.cuisine_type, latlng: restaurant.latlng, name: restaurant.name,
+    neighborhood: restaurant.neighborhood, operating_hours: restaurant.operating_hours,
+    photograph: restaurant.photograph, reviews: restaurant.reviews })
+}
+
+/**
  * Obtain one restaurant from IndexDb
  */
 function _fetchRestaurantIndexDB(id) {
@@ -25,21 +35,13 @@ function _fetchRestaurantIndexDB(id) {
       return _updateRestaurantIndexDB(id)
     } else {
       _updateRestaurantIndexDB(id)
-      return db.transaction('restaurants').objectStore('restaurants').get(id).then(restaurant => {
-        return restaurant
-      }).catch(error => { return _updateRestaurantIndexDB(id) })
+      return db.transaction('restaurants', 'readonly').objectStore('restaurants').get(parseInt(id))
+        .then(restaurant => {
+          if (restaurant == undefined) { return _updateRestaurantIndexDB(id) }
+          return restaurant
+      })
     }
   }).catch(error => { return _updateRestaurantIndexDB(id) })
-}
-
-/**
- * Add?Update Restaurant IndexDb
- */
-function _addRestaurantToDB(store, restaurant) {
-  store.put({ id: restaurant.id, address: restaurant.address,
-    cuisine_type: restaurant.cuisine_type, latlng: restaurant.latlng, name: restaurant.name,
-    neighborhood: restaurant.neighborhood, operating_hours: restaurant.operating_hours,
-    photograph: restaurant.photograph, reviews: restaurant.reviews })
 }
 
 /**
@@ -193,9 +195,15 @@ export default {
    * Fetch a restaurant by its ID.
    */
   fetchRestaurantById(id) {
-    return _fetchRestaurantExternal(id).then(restaurant => {
-      return restaurant
-    })
+    if ('indexedDB' in window) {
+      return _fetchRestaurantIndexDB(id).then(restaurant => {
+        return restaurant
+      })
+    } else {
+      return _fetchRestaurantExternal(id).then(restaurant => {
+        return restaurant
+      })
+    }
   },
 
   /**
