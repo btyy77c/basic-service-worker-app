@@ -203,8 +203,8 @@ export default {
    */
   imageUrlForRestaurant(restaurant) {
     let imgNumber = Number(restaurant.photograph)
-    if (isNaN(imgNumber) || imgNumber < 1 || imgNumber > 10) { imgNumber = 0 }
-    return `/img/db/${imgNumber}.jpg`
+    if (isNaN(imgNumber) || imgNumber < 1 || imgNumber > 10) { return '/img/db/0.webp' }
+    return `/img/db/${imgNumber}.webp`
   },
 
   /**
