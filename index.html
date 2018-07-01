@@ -1,12 +1,19 @@
 <!DOCTYPE html>
-<html>
+<html lang='en'>
 
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, minimum-scale=1">
 
+  <meta name="theme-color" content="#fda429"/>
+  <meta name="Description" content="Basic Progressive Web App">
+
+  <!-- Normalize.css for better cross-browser consistency -->
   <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
+  <!-- Main CSS file -->
   <link type="text/css" rel="stylesheet" href="css/index.css">
+
+  <link rel="manifest" href="/manifest.json">
   <title>Restaurant Reviews</title>
 </head>
 
@@ -23,29 +30,28 @@
     </section>
 
     <section>
-      <div class="filter-options">
-        <h4 class='responsive'>Filter Results</h4>
-        <div class='responsive select-boxes'>
+      <div class="filter-options" aria-labelledby="filter-label">
+        <h4 id='filter-label' class='responsive'>Filter Results</h4>
+        <div class='responsive select-boxes' aria-label='filter select options'>
           <select class='responsive' id="neighborhoods-select" name="neighborhoods"
-                  onchange="updateRestaurants()">
+                  aria-label='Filter Neighborhoods'>
             <option value="all">All Neighborhoods</option>
           </select>
-          <select class='responsive' id="cuisines-select" name="cuisines" onchange="updateRestaurants()">
+          <select class='responsive' id="cuisines-select" name="cuisines"
+                  aria-label='Filter Cuisines'>
             <option value="all">All Cuisines</option>
           </select>
         </div>
       </div>
 
 
-      <div id="restaurants-list"></div>
+      <div id="restaurants-list" aria-label='list of restaurants'></div>
     </section>
   </main>
 
-  <script type="application/javascript" charset="utf-8" src="js/sw.js"></script>
-  <script type="application/javascript" charset="utf-8" src="js/dbhelper.js"></script>
-  <script type="application/javascript" charset="utf-8" src="js/main.js"></script>
-  <script async defer src="https://maps.googleapis.com/maps/api/js?libraries=places&callback=initMap">
-  </script>
+  <script type="module" charset="utf-8" src="js/main.js"></script>
+  <script defer type="application/javascript" charset="utf-8" src="js/sw.js"></script>
+  <script defer src="https://maps.googleapis.com/maps/api/js?libraries=places&callback=initMap"></script>
 
   <footer id="footer">
     Copyright (c) 2017 <a href="/"><strong>Restaurant Reviews</strong></a> All Rights Reserved.
