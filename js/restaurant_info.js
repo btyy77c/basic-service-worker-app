@@ -59,7 +59,7 @@ function fillBreadcrumb() {
   const breadcrumb = document.getElementById('breadcrumb');
   const li = document.createElement('li');
   li.innerHTML = restaurant.name;
-  li.setAttribute('aria-current', restaurant.name)
+  li.setAttribute('aria-current', 'page')
   breadcrumb.appendChild(li);
 }
 
