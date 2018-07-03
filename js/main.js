@@ -1,4 +1,5 @@
 import DBHelper from './dbhelper.js'
+import Map from './map.js'
 
 let cuisines = []
 let displayRestaurants = []
@@ -9,34 +10,10 @@ var map = null
 var markers = []
 
 /**
- * Initialize Google map, called from HTML.
- */
-window.initMap = () => {
-  let loc = {
-    lat: 40.722216,
-    lng: -73.987501
-  }
-
-  try {
-    map = new google.maps.Map(document.getElementById('map'), {
-      zoom: 12,
-      center: loc,
-      scrollwheel: false
-    })
-  } catch (error) {}
-
-  fillVariables()
-  document.getElementById('cuisines-select').addEventListener('change', updateRestaurants)
-  document.getElementById('neighborhoods-select').addEventListener('change', updateRestaurants)
-}
-
-/**
  * Add markers for current restaurants to the map.
  */
 function addMarkerToMap(restaurant) {
-  if (map == null) { return }
-  const marker = DBHelper.mapMarkerForRestaurant(restaurant, map)
-  google.maps.event.addListener(marker, 'click', () => { window.location.href = marker.url })
+  let marker = Map.addMarkerToMap(restaurant)
   markers.push(marker)
 }
 
@@ -163,11 +140,10 @@ function updateRestaurants() {
  * Sometimes Google Maps fails to load
  */
 document.addEventListener('DOMContentLoaded', () => {
-  try {
-    google.maps
-  } catch(error) {
-    window.initMap()
-  }
+  map = Map.initMap([40.722216, -73.987501], 12)
+  fillVariables()
+  document.getElementById('cuisines-select').addEventListener('change', updateRestaurants)
+  document.getElementById('neighborhoods-select').addEventListener('change', updateRestaurants)
 })
 
 export default {}
