@@ -24,6 +24,7 @@ const urlsToCache = [
   '/js/dbhelper.js',
   '/js/idb.js',
   '/js/main.js',
+  '/js/map.js',
   '/js/restaurant_info.js'
 ]
 

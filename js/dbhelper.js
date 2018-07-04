@@ -216,21 +216,6 @@ export default {
   },
 
   /**
-   * Map marker for a restaurant.
-   */
-  mapMarkerForRestaurant(restaurant, map) {
-    if (map == null) { return }
-    const marker = new google.maps.Marker({
-      position: restaurant.latlng,
-      title: restaurant.name,
-      url: this.urlForRestaurant(restaurant),
-      map: map,
-      animation: google.maps.Animation.DROP
-    });
-    return marker;
-  },
-
-  /**
    * Restaurant page URL.
    */
   urlForRestaurant(restaurant) {
