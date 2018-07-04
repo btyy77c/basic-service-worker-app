@@ -12,7 +12,7 @@ function _mapMarkerForRestaurant(restaurant) {
   const marker = new L.marker([restaurant.latlng.lat, restaurant.latlng.lng],
     { title: restaurant.name, alt: restaurant.name, url: DBHelper.urlForRestaurant(restaurant) })
   marker.addTo(map)
-  return marker;
+  return marker
 }
 
 export default {
@@ -37,7 +37,7 @@ export default {
     })
 
     L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.jpg70?access_token={mapboxToken}', {
-      mapboxToken: 'Token',
+      mapboxToken: 'pk.eyJ1IjoiYnR5eTc3YyIsImEiOiJjamo1a2U5azQweGw0M29wb2w1NDZ3MGl5In0.D6kRVEeV-dMfC-bJWil8WA',
       maxZoom: 18,
       attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
         '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
@@ -45,5 +45,14 @@ export default {
       id: 'mapbox.streets'
     }).addTo(map)
     return map
-  }
+  },
+
+  /**
+   * Clear current map markers.
+   */
+   resetMarkers() {
+     markers.forEach(marker => marker.remove())
+     markers = []
+     return markers
+   }
 }

@@ -6,17 +6,6 @@ let displayRestaurants = []
 let restaurants = []
 let neighborhoods = []
 
-var map = null
-var markers = []
-
-/**
- * Add markers for current restaurants to the map.
- */
-function addMarkerToMap(restaurant) {
-  let marker = Map.addMarkerToMap(restaurant)
-  markers.push(marker)
-}
-
 /**
  * Create restaurant HTML.
  */
@@ -55,7 +44,7 @@ function createRestaurantHTML(restaurant) {
   innerDiv.append(more)
 
   container.append(div)
-  addMarkerToMap(restaurant)
+  Map.addMarkerToMap(restaurant)
 }
 
 /**
@@ -115,9 +104,7 @@ function resetRestaurants() {
   const ul = document.getElementById('restaurants-list');
   ul.innerHTML = '';
 
-  // Remove all map markers
-  markers.forEach(m => m.setMap(null));
-  markers = [];
+  Map.resetMarkers()
 }
 
 /**
@@ -140,7 +127,7 @@ function updateRestaurants() {
  * Sometimes Google Maps fails to load
  */
 document.addEventListener('DOMContentLoaded', () => {
-  map = Map.initMap([40.722216, -73.987501], 12)
+  Map.initMap([40.722216, -73.987501], 12)
   fillVariables()
   document.getElementById('cuisines-select').addEventListener('change', updateRestaurants)
   document.getElementById('neighborhoods-select').addEventListener('change', updateRestaurants)
