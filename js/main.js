@@ -122,10 +122,6 @@ function updateRestaurants() {
   fillRestaurantsHTML()
 }
 
-
-/**
- * Sometimes Google Maps fails to load
- */
 document.addEventListener('DOMContentLoaded', () => {
   Map.initMap([40.722216, -73.987501], 12)
   fillVariables()
