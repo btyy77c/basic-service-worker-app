@@ -1,44 +1,10 @@
 import DBHelper from './dbhelper.js'
+import Map from './map.js'
 
 let cuisines = []
 let displayRestaurants = []
 let restaurants = []
 let neighborhoods = []
-
-var map = null
-var markers = []
-
-/**
- * Initialize Google map, called from HTML.
- */
-window.initMap = () => {
-  let loc = {
-    lat: 40.722216,
-    lng: -73.987501
-  }
-
-  try {
-    map = new google.maps.Map(document.getElementById('map'), {
-      zoom: 12,
-      center: loc,
-      scrollwheel: false
-    })
-  } catch (error) {}
-
-  fillVariables()
-  document.getElementById('cuisines-select').addEventListener('change', updateRestaurants)
-  document.getElementById('neighborhoods-select').addEventListener('change', updateRestaurants)
-}
-
-/**
- * Add markers for current restaurants to the map.
- */
-function addMarkerToMap(restaurant) {
-  if (map == null) { return }
-  const marker = DBHelper.mapMarkerForRestaurant(restaurant, map)
-  google.maps.event.addListener(marker, 'click', () => { window.location.href = marker.url })
-  markers.push(marker)
-}
 
 /**
  * Create restaurant HTML.
@@ -78,7 +44,7 @@ function createRestaurantHTML(restaurant) {
   innerDiv.append(more)
 
   container.append(div)
-  addMarkerToMap(restaurant)
+  Map.addMarkerToMap(restaurant)
 }
 
 /**
@@ -138,9 +104,7 @@ function resetRestaurants() {
   const ul = document.getElementById('restaurants-list');
   ul.innerHTML = '';
 
-  // Remove all map markers
-  markers.forEach(m => m.setMap(null));
-  markers = [];
+  Map.resetMarkers()
 }
 
 /**
@@ -158,16 +122,11 @@ function updateRestaurants() {
   fillRestaurantsHTML()
 }
 
-
-/**
- * Sometimes Google Maps fails to load
- */
 document.addEventListener('DOMContentLoaded', () => {
-  try {
-    google.maps
-  } catch(error) {
-    window.initMap()
-  }
+  Map.initMap([40.722216, -73.987501], 12)
+  fillVariables()
+  document.getElementById('cuisines-select').addEventListener('change', updateRestaurants)
+  document.getElementById('neighborhoods-select').addEventListener('change', updateRestaurants)
 })
 
 export default {}

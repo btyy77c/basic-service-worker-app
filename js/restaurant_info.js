@@ -1,12 +1,7 @@
 import DBHelper from './dbhelper.js'
+import Map from './map.js'
 
 let restaurant;
-var map;
-
-/**
- * Initialize Google map, called from HTML.
- */
-window.initMap = () => { fetchRestaurantFromURL() }
 
 /**
  * Create review HTML and add it to the webpage.
@@ -135,23 +130,10 @@ function fillReviewsHTML(reviews = restaurant.reviews) {
  * Update Map
  */
 function setMap() {
-  map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 16,
-    center: restaurant.latlng,
-    scrollwheel: false
-  })
-  DBHelper.mapMarkerForRestaurant(restaurant, map)
+  Map.initMap(restaurant.latlng, 16)
+  Map.addMarkerToMap(restaurant)
 }
 
-/**
- * Sometimes Google Maps fails to load
- */
-document.addEventListener('DOMContentLoaded', () => {
-  try {
-    google.maps
-  } catch(error) {
-    window.initMap()
-  }
-})
 
+document.addEventListener('DOMContentLoaded', () => { fetchRestaurantFromURL() })
 export default {}
