@@ -1,9 +1,7 @@
 /* Common database helper functions. */
 
 import idb from './idb.js'
-
-const PORT = 1337
-const DATABASE_URL = `http://localhost:${PORT}/restaurants`
+import ExternalDB from './dbexternalhelper.js'
 
 /**
  * Add/Update Restaurant IndexDb
@@ -72,34 +70,10 @@ function _fetchRestaurantsIndexDB() {
 }
 
 /**
- * Obtain one restaurant from External Server
- */
-function _fetchRestaurantExternal(id) {
-  return fetch(`${DATABASE_URL}/${id}`).then(response => {
-    if (response.status == 200) {
-      return response.json().then(body => { return body })
-    } else {
-      return { error: 'Restaurant does not exist' }
-    }
-  }).catch(error => { return { error: error } })
-}
-
-/**
- * Obtain restaurants from External Server
- */
-function _fetchRestaurantsExternal() {
-  return fetch(DATABASE_URL).then(response => {
-    if (response.status == 200) {
-      return response.json().then(body => { return body })
-    } else { return [] }
-  }).catch(error => { return [] })
-}
-
-/**
  * Creates/Updates One Restaurant in IndexDb
  */
 function _updateRestaurantIndexDB(id) {
-  return _fetchRestaurantExternal(id).then(restaurant => {
+  return ExternalDB.fetchRestaurantExternal(id).then(restaurant => {
     if (restaurant.id) {  // don't add bad restaurants to DB
       idb.open('restaurantsDB', 1).then(db => {
         let tx = db.transaction('restaurants', 'readwrite')
@@ -117,7 +91,7 @@ function _updateRestaurantIndexDB(id) {
  * Creates/Updates Restaurant IndexDb
  */
 function _updateRestaurantsIndexDB() {
-  return _fetchRestaurantsExternal().then(restaurants => {
+  return ExternalDB.fetchRestaurantsExternal().then(restaurants => {
     idb.open('restaurantsDB', 1).then(db => {
       let tx = db.transaction('restaurants', 'readwrite')
       let store = tx.objectStore('restaurants')
@@ -185,7 +159,7 @@ export default {
         return this.filterRestaurants(response)
       })
     } else {
-      return _fetchRestaurantsExternal().then(response => {
+      return ExternalDB.fetchRestaurantsExternal().then(response => {
         return this.filterRestaurants(response)
       })
     }
@@ -200,7 +174,7 @@ export default {
         return restaurant
       })
     } else {
-      return _fetchRestaurantExternal(id).then(restaurant => {
+      return ExternalDB.fetchRestaurantExternal(id).then(restaurant => {
         return restaurant
       })
     }
