@@ -68,7 +68,7 @@ export default {
         return reviews
       })
     } else {
-      return ExternalDB.fetchReviews(restaurntId).then(reviews => {
+      return ExternalDB.fetchReviews(restaurantId).then(reviews => {
         return reviews
       })
     }
