@@ -3,9 +3,6 @@
 import ExternalDB from './dbexternalhelper.js'
 import DexieDB from './dbdexiehelper.js'
 
-const dbPromise = new Dexie('restaurantsDB')
-const MIN_NUMBER_OF_RESTAURANTS = 5
-
 export default {
   /**
    * Obtain list of cuisines from restaurant
