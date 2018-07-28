@@ -85,7 +85,7 @@ export default {
    */
   fetchReviews(restaurantId) {
     if ('indexedDB' in window) {
-      return ExternalDB.fetchReviews(restaurantId).then(reviews => {
+      return DexieDB.fetchReviews(restaurantId).then(reviews => {
         return reviews
       })
     } else {

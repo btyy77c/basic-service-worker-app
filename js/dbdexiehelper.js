@@ -4,6 +4,7 @@ import ExternalDB from './dbexternalhelper.js'
 
 const dbPromise = new Dexie('restaurantsDB')
 const MIN_NUMBER_OF_RESTAURANTS = 5
+const MIN_NUMBER_OF_REVIEWS = 1
 
 /**
  * Add/Update Restaurant IndexDb
@@ -16,12 +17,20 @@ function _addRestaurantToDB(restaurant) {
 }
 
 /**
+ * Add/Update Restaurant IndexDb
+ */
+function _addReviewToDB(review) {
+  dbPromise.reviews.put({ id: review.id, comments: review.comments, updatedAt: review.updatedAt,
+    name: review.name, rating: review.rating, restaurant_id: review.restaurant_id })
+}
+
+/**
  * Add/Update Stores in IndexDB
  */
 function _initializeDixieStores() {
   dbPromise.version(1).stores({
     restaurants: 'id,address,cuisine_type,latlng,name,neighborhood,operating_hours,photograph',
-    reviews: 'id'
+    reviews: 'id,comments,date,name,rating,restaurant_id'
   })
 }
 
@@ -44,6 +53,13 @@ function _updateRestaurantsIndexDB() {
   return ExternalDB.fetchRestaurantsExternal().then(restaurants => {
     restaurants.forEach(restaurant => { _addRestaurantToDB(restaurant) })
     return restaurants
+  })
+}
+
+function _updateReviewsIndexDB(restaurantId) {
+  return ExternalDB.fetchReviews(restaurantId).then(reviews => {
+    reviews.forEach(review => { _addReviewToDB(review) })
+    return reviews
   })
 }
 
@@ -78,5 +94,19 @@ export default {
         return restaurants
       }
     }).catch(error => { return [] })
-  }
+  },
+
+  /**
+   * Obtain restaurants from indexDB
+   */
+  fetchReviews(restaurantId) {
+    return dbPromise.reviews.where('restaurant_id').equals(restaurantId).toArray().then(reviews => {
+      if (reviews.length < MIN_NUMBER_OF_REVIEWS) {
+        return _updateReviewsIndexDB(restaurantId)
+      } else {
+        _updateReviewsIndexDB(restaurantId)
+        return reviews
+      }
+    }).catch(error => { return [] })
+  },
 }
