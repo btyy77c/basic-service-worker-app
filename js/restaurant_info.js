@@ -11,7 +11,7 @@ function createReviewHTML(review) {
   li.appendChild(name);
 
   const date = document.createElement('p');
-  date.innerHTML = new Date(review.updatedAt).toDateString();
+  date.innerHTML = new Date(review.createdAt).toDateString();
   li.appendChild(date);
 
   const rating = document.createElement('p');
@@ -120,6 +120,27 @@ function setMap() {
   Map.addMarkerToMap(restaurant)
 }
 
+function submitReviewForm() {
+  let newReview = {
+    name: document.getElementById('name').value || 'Name Not Provided',
+    rating: document.getElementById('rating').value,
+    comments: document.getElementById('comment').value || 'No Comment Provided',
+    restaurant_id: restaurant.id,
+    createdAt: Date.now(),
+    updatedAt: Date.now()
+  }
 
-document.addEventListener('DOMContentLoaded', () => { fetchRestaurantFromURL() })
+  DBHelper.postReview(newReview).then(response => {
+    if (response.id) { location.href = location.href }
+  })
+}
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  fetchRestaurantFromURL()
+  document.getElementById('create-review-form').addEventListener('submit', e => {
+    e.preventDefault()
+    submitReviewForm()
+  })
+})
 export default {}

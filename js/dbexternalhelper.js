@@ -29,4 +29,17 @@ export default {
       } else { return [] }
     }).catch(error => { return [] })
   },
+
+  postReview(newReview) {
+    return fetch(`${DATABASE_URL}/reviews`, {
+      method: 'POST',
+      body: JSON.stringify(newReview)
+    }).then(response => {
+      if (response.status == 201) {
+        return response.json().then(body => { return body })
+      } else {
+        return { error: 'Failed to save review' }
+      }
+    }).catch(error => { return { error: error } })
+  }
 }

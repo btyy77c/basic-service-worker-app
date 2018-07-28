@@ -14,14 +14,15 @@ function _addRestaurantToDB(restaurant) {
 }
 
 function _addReviewToDB(review) {
-  dbPromise.reviews.put({ id: review.id, comments: review.comments, updatedAt: review.updatedAt,
-    name: review.name, rating: review.rating, restaurant_id: review.restaurant_id })
+  dbPromise.reviews.put({ id: review.id, comments: review.comments, createdAt: review.createdAt,
+    updatedAt: review.updatedAt, name: review.name, rating: review.rating,
+    restaurant_id: review.restaurant_id })
 }
 
 function _initializeDixieStores() {
   dbPromise.version(1).stores({
     restaurants: 'id,address,cuisine_type,latlng,name,neighborhood,operating_hours,photograph',
-    reviews: 'id,comments,date,name,rating,restaurant_id'
+    reviews: 'id,createdAt,comments,name,rating,restaurant_id,updatedAt'
   })
 }
 

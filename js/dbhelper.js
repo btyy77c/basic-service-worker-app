@@ -65,11 +65,11 @@ export default {
   fetchReviews(restaurantId) {
     if ('indexedDB' in window) {
       return DexieDB.fetchReviews(restaurantId).then(reviews => {
-        return reviews
+        return this.sortReviews(reviews)
       })
     } else {
       return ExternalDB.fetchReviews(restaurantId).then(reviews => {
-        return reviews
+        return this.sortReviews(reviews)
       })
     }
   },
@@ -78,6 +78,18 @@ export default {
     let imgNumber = Number(restaurant.photograph)
     if (isNaN(imgNumber) || imgNumber < 1 || imgNumber > 10) { return '/img/db/0.webp' }
     return `/img/db/${imgNumber}.webp`
+  },
+
+  postReview(newReview) {
+    if ('indexedDB' in window) {
+      return ExternalDB.postReview(newReview).then(response => { return response })
+    } else {
+      return ExternalDB.postReview(newReview).then(response => { return response })
+    }
+  },
+
+  sortReviews(reviews) {
+    return reviews.sort((a, b) => { return new Date(b.createdAt) - new Date(a.createdAt) })
   },
 
   urlForRestaurant(restaurant) {
