@@ -4,9 +4,6 @@ import Map from './map.js'
 let restaurant;
 let reviews = []
 
-/**
- * Create review HTML and add it to the webpage.
- */
 function createReviewHTML(review) {
   const li = document.createElement('li');
   const name = document.createElement('p');
@@ -28,9 +25,6 @@ function createReviewHTML(review) {
   return li;
 }
 
-/**
- * Get current restaurant from page URL.
- */
 function fetchRestaurantFromURL() {
   if (restaurant) { return } // restaurant already fetched!
 
@@ -49,9 +43,6 @@ function fetchRestaurantFromURL() {
   })
 }
 
-/**
- * Obtain restaurnt reviews from database
- */
 function fetchReviews() {
   DBHelper.fetchReviews(restaurant.id).then(r => {
     reviews = r
@@ -59,9 +50,6 @@ function fetchReviews() {
   })
 }
 
-/**
- * Add restaurant name to the breadcrumb navigation menu
- */
 function fillBreadcrumb() {
   const breadcrumb = document.getElementById('breadcrumb');
   const li = document.createElement('li');
@@ -70,9 +58,6 @@ function fillBreadcrumb() {
   breadcrumb.appendChild(li);
 }
 
-/**
- * Create restaurant HTML and add it to the webpage
- */
 function fillRestaurantHTML() {
   const name = document.getElementById('restaurant-name');
   name.innerHTML = restaurant.name;
@@ -94,9 +79,6 @@ function fillRestaurantHTML() {
   }
 }
 
-/**
- * Create restaurant operating hours HTML table and add it to the webpage.
- */
 function fillRestaurantHoursHTML(operatingHours = restaurant.operating_hours) {
   const hours = document.getElementById('restaurant-hours');
   for (let key in operatingHours) {
@@ -114,9 +96,6 @@ function fillRestaurantHoursHTML(operatingHours = restaurant.operating_hours) {
   }
 }
 
-/**
- * Create all reviews HTML and add them to the webpage.
- */
 function fillReviewsHTML() {
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h2');
@@ -136,9 +115,6 @@ function fillReviewsHTML() {
   container.appendChild(ul);
 }
 
-/**
- * Update Map
- */
 function setMap() {
   Map.initMap(restaurant.latlng, 16)
   Map.addMarkerToMap(restaurant)

@@ -6,9 +6,6 @@ const dbPromise = new Dexie('restaurantsDB')
 const MIN_NUMBER_OF_RESTAURANTS = 5
 const MIN_NUMBER_OF_REVIEWS = 1
 
-/**
- * Add/Update Restaurant IndexDb
- */
 function _addRestaurantToDB(restaurant) {
   dbPromise.restaurants.put({ id: restaurant.id, address: restaurant.address,
     cuisine_type: restaurant.cuisine_type, latlng: restaurant.latlng, name: restaurant.name,
@@ -16,17 +13,11 @@ function _addRestaurantToDB(restaurant) {
     photograph: restaurant.photograph, reviews: restaurant.reviews })
 }
 
-/**
- * Add/Update Restaurant IndexDb
- */
 function _addReviewToDB(review) {
   dbPromise.reviews.put({ id: review.id, comments: review.comments, updatedAt: review.updatedAt,
     name: review.name, rating: review.rating, restaurant_id: review.restaurant_id })
 }
 
-/**
- * Add/Update Stores in IndexDB
- */
 function _initializeDixieStores() {
   dbPromise.version(1).stores({
     restaurants: 'id,address,cuisine_type,latlng,name,neighborhood,operating_hours,photograph',
@@ -34,9 +25,6 @@ function _initializeDixieStores() {
   })
 }
 
-/**
- * Creates/Updates One Restaurant in IndexDb
- */
 function _updateRestaurantIndexDB(id) {
   return ExternalDB.fetchRestaurantExternal(id).then(restaurant => {
     if (restaurant.id) {  // don't add bad restaurants to DB
@@ -46,9 +34,6 @@ function _updateRestaurantIndexDB(id) {
   })
 }
 
-/**
- * Creates/Updates All Restaurants in IndexDb
- */
 function _updateRestaurantsIndexDB() {
   return ExternalDB.fetchRestaurantsExternal().then(restaurants => {
     restaurants.forEach(restaurant => { _addRestaurantToDB(restaurant) })
@@ -64,9 +49,6 @@ function _updateReviewsIndexDB(restaurantId) {
 }
 
 export default {
-  /**
-   * Obtain one restaurant from IndexDb
-   */
   fetchRestaurantIndexDB(id) {
     _initializeDixieStores()
 
@@ -80,9 +62,6 @@ export default {
     }).catch(error => { return _updateRestaurantIndexDB(id) })
   },
 
-  /**
-   * Obtain restaurants from IndexDb
-   */
   fetchRestaurantsIndexDB() {
     _initializeDixieStores()
 
@@ -96,9 +75,6 @@ export default {
     }).catch(error => { return [] })
   },
 
-  /**
-   * Obtain restaurants from indexDB
-   */
   fetchReviews(restaurantId) {
     return dbPromise.reviews.where('restaurant_id').equals(restaurantId).toArray().then(reviews => {
       if (reviews.length < MIN_NUMBER_OF_REVIEWS) {
