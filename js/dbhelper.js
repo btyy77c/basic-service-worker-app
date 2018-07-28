@@ -82,9 +82,9 @@ export default {
 
   postReview(newReview) {
     if ('indexedDB' in window) {
-      return ExternalDB.postReview(newReview).then(response => { return response })
+      return DexieDB.postReview(newReview).then(review => { return review })
     } else {
-      return ExternalDB.postReview(newReview).then(response => { return response })
+      return ExternalDB.postReview(newReview).then(review => { return review })
     }
   },
 

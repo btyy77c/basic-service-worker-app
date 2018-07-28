@@ -86,4 +86,21 @@ export default {
       }
     }).catch(error => { return [] })
   },
+
+  postReview(newReview) {
+    return ExternalDB.postReview(newReview).then(review => {
+      if (review.id) {
+        _addReviewToDB(review)
+        return review
+      } else {
+        newReview.id = 'temp'
+        _addReviewToDB(newReview)
+        return newReview
+      }
+    }).catch(error => {
+      newReview.id = 'temp'
+      _addReviewToDB(newReview)
+      return newReview
+    })
+  }
 }

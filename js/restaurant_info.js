@@ -130,8 +130,8 @@ function submitReviewForm() {
     updatedAt: Date.now()
   }
 
-  DBHelper.postReview(newReview).then(response => {
-    if (response.id) { location.href = location.href }
+  DBHelper.postReview(newReview).then(review => {
+    if (review.id) { location.href = location.href }
   })
 }
 
