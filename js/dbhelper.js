@@ -1,7 +1,7 @@
 /* Common database helper functions. */
 
 import ExternalDB from './dbexternalhelper.js'
-import DixieDB from './dbdixiehelper.js'
+import DexieDB from './dbdexiehelper.js'
 
 const dbPromise = new Dexie('restaurantsDB')
 const MIN_NUMBER_OF_RESTAURANTS = 5
@@ -58,7 +58,7 @@ export default {
    */
   fetchRestaurants() {
     if ('indexedDB' in window) {
-      return DixieDB.fetchRestaurantsIndexDB().then(response => {
+      return DexieDB.fetchRestaurantsIndexDB().then(response => {
         return this.filterRestaurants(response)
       })
     } else {
@@ -73,7 +73,7 @@ export default {
    */
   fetchRestaurantById(id) {
     if ('indexedDB' in window) {
-      return DixieDB.fetchRestaurantIndexDB(id).then(restaurant => {
+      return DexieDB.fetchRestaurantIndexDB(id).then(restaurant => {
         return restaurant
       })
     } else {

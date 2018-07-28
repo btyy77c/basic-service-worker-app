@@ -21,7 +21,7 @@ const urlsToCache = [
   '/img/db/10.webp',
   '/img/icons/icon-192.png',
   '/img/icons/icon-512.png',
-  '/js/dbdixiehelper.js',
+  '/js/dbdexiehelper.js',
   '/js/dbexternalhelper.js',
   '/js/dbhelper.js',
   '/js/main.js',
