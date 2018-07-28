@@ -23,7 +23,6 @@ const urlsToCache = [
   '/img/icons/icon-512.png',
   '/js/dbexternalhelper.js',
   '/js/dbhelper.js',
-  '/js/idb.js',
   '/js/main.js',
   '/js/map.js',
   '/js/restaurant_info.js'

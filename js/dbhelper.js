@@ -1,6 +1,5 @@
 /* Common database helper functions. */
 
-import idb from './idb.js'
 import ExternalDB from './dbexternalhelper.js'
 
 const dbPromise = new Dexie('restaurantsDB')
@@ -17,30 +16,27 @@ function _addRestaurantToDB(restaurant) {
 }
 
 /**
+ * Add/Update Stores in IndexDB
+ */
+function _initializeDixieStores() {
+  dbPromise.version(1).stores({
+    restaurants: 'id,address,cuisine_type,latlng,name,neighborhood,operating_hours,photograph',
+    reviews: 'id'
+  })
+}
+
+/**
  * Obtain one restaurant from IndexDb
  */
 function _fetchRestaurantIndexDB(id) {
-  // Credit https://developers.google.com/web/ilt/pwa/working-with-indexeddb
+  _initializeDixieStores()
 
-  let newDB = false // Needed since fetch statments don't work inside idb
-
-  let dbPromise = idb.open('restaurantsDB', 1, upgradeDb => {
-    if (!upgradeDb.objectStoreNames.contains('restaurants')) {
-      let store = upgradeDb.createObjectStore('restaurants', { keyPath: 'id' })
-      newDB = true
-    }
-  })
-
-  return dbPromise.then(db => {
-    if (newDB) {
+  return dbPromise.restaurants.get(id).then(restaurant => {
+    if (restaurant == undefined) {
       return _updateRestaurantIndexDB(id)
     } else {
       _updateRestaurantIndexDB(id)
-      return db.transaction('restaurants', 'readonly').objectStore('restaurants').get(parseInt(id))
-        .then(restaurant => {
-          if (restaurant == undefined) { return _updateRestaurantIndexDB(id) }
-          return restaurant
-      })
+      return restaurant
     }
   }).catch(error => { return _updateRestaurantIndexDB(id) })
 }
@@ -49,10 +45,7 @@ function _fetchRestaurantIndexDB(id) {
  * Obtain restaurants from IndexDb
  */
 function _fetchRestaurantsIndexDB() {
-  dbPromise.version(1).stores({
-    restaurants: 'id,address,cuisine_type,latlng,name,neighborhood,operating_hours,photograph',
-    reviews: 'id'
-  })
+  _initializeDixieStores()
 
   return dbPromise.restaurants.toArray().then(restaurants => {
     if (restaurants.length < MIN_NUMBER_OF_RESTAURANTS) {
@@ -70,14 +63,8 @@ function _fetchRestaurantsIndexDB() {
 function _updateRestaurantIndexDB(id) {
   return ExternalDB.fetchRestaurantExternal(id).then(restaurant => {
     if (restaurant.id) {  // don't add bad restaurants to DB
-      idb.open('restaurantsDB', 1).then(db => {
-        let tx = db.transaction('restaurants', 'readwrite')
-        let store = tx.objectStore('restaurants')
-        _addRestaurantToDB(store, restaurant)
-        tx.complete
-      })
+      _addRestaurantToDB(restaurant)
     }
-
     return restaurant
   })
 }
