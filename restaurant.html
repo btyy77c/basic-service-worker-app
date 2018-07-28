@@ -60,6 +60,30 @@
       <ul id="reviews-list" aria-label='List of Reviews'></ul>
     </section>
     <!-- End reviews -->
+
+    <section id="create-review" aria-label='Create Review'>
+      <hr/>
+      <h2>Create New Review</h4>
+      <form>
+        <label for='name'>Your Name</label>
+        <input type='text' id='name' name='name'>
+
+        <label for='rating'>Restaurant Rating</label>
+        <select id='rating' name='rating' aria-label='Restaurant Rating'>
+          <option value=1>1</option>
+          <option value=2>2</option>
+          <option value=3>3</option>
+          <option value=4>4</option>
+          <option value=5>5</option>
+        </select>
+
+        <label for='comment'>Comments</label>
+        <textarea id='comment' name='comment' aria-label='Restaurant Rating Comment'>
+        </textarea>
+
+        <button>Add Review</button>
+      </form>
+    </section>
   </main>
   <!-- End main -->
 
