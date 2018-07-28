@@ -81,6 +81,21 @@ export default {
   },
 
   /**
+   * Obtain reviews associated with restaurant id
+   */
+  fetchReviews(restaurantId) {
+    if ('indexedDB' in window) {
+      return ExternalDB.fetchReviews(restaurantId).then(reviews => {
+        return reviews
+      })
+    } else {
+      return ExternalDB.fetchReviews(restaurntId).then(reviews => {
+        return reviews
+      })
+    }
+  },
+
+  /**
    * Restaurant image URL.
    */
   imageUrlForRestaurant(restaurant) {

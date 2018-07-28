@@ -2,6 +2,7 @@ import DBHelper from './dbhelper.js'
 import Map from './map.js'
 
 let restaurant;
+let reviews = []
 
 /**
  * Create review HTML and add it to the webpage.
@@ -40,10 +41,21 @@ function fetchRestaurantFromURL() {
   DBHelper.fetchRestaurantById(id).then(r => {
     if (r.id) {
       restaurant = r
+      fetchReviews()
       fillRestaurantHTML()
       fillBreadcrumb()
       setMap()
     }
+  })
+}
+
+/**
+ * Obtain restaurnt reviews from database
+ */
+function fetchReviews() {
+  DBHelper.fetchReviews(restaurant.id).then(r => {
+    reviews = r
+    fillReviewsHTML()
   })
 }
 
@@ -80,8 +92,6 @@ function fillRestaurantHTML() {
   if (restaurant.operating_hours) {
     fillRestaurantHoursHTML();
   }
-  // fill reviews
-  fillReviewsHTML();
 }
 
 /**
@@ -107,13 +117,13 @@ function fillRestaurantHoursHTML(operatingHours = restaurant.operating_hours) {
 /**
  * Create all reviews HTML and add them to the webpage.
  */
-function fillReviewsHTML(reviews = restaurant.reviews) {
+function fillReviewsHTML() {
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h2');
   title.innerHTML = 'Reviews';
   container.appendChild(title);
 
-  if (!reviews) {
+  if (reviews.length < 1) {
     const noReviews = document.createElement('p');
     noReviews.innerHTML = 'No reviews yet!';
     container.appendChild(noReviews);
