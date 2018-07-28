@@ -1,107 +1,7 @@
 /* Common database helper functions. */
 
-import idb from './idb.js'
 import ExternalDB from './dbexternalhelper.js'
-
-/**
- * Add/Update Restaurant IndexDb
- */
-function _addRestaurantToDB(store, restaurant) {
-  store.put({ id: restaurant.id, address: restaurant.address,
-    cuisine_type: restaurant.cuisine_type, latlng: restaurant.latlng, name: restaurant.name,
-    neighborhood: restaurant.neighborhood, operating_hours: restaurant.operating_hours,
-    photograph: restaurant.photograph, reviews: restaurant.reviews })
-}
-
-/**
- * Obtain one restaurant from IndexDb
- */
-function _fetchRestaurantIndexDB(id) {
-  // Credit https://developers.google.com/web/ilt/pwa/working-with-indexeddb
-
-  let newDB = false // Needed since fetch statments don't work inside idb
-
-  let dbPromise = idb.open('restaurantsDB', 1, upgradeDb => {
-    if (!upgradeDb.objectStoreNames.contains('restaurants')) {
-      let store = upgradeDb.createObjectStore('restaurants', { keyPath: 'id' })
-      newDB = true
-    }
-  })
-
-  return dbPromise.then(db => {
-    if (newDB) {
-      return _updateRestaurantIndexDB(id)
-    } else {
-      _updateRestaurantIndexDB(id)
-      return db.transaction('restaurants', 'readonly').objectStore('restaurants').get(parseInt(id))
-        .then(restaurant => {
-          if (restaurant == undefined) { return _updateRestaurantIndexDB(id) }
-          return restaurant
-      })
-    }
-  }).catch(error => { return _updateRestaurantIndexDB(id) })
-}
-
-/**
- * Obtain restaurants from IndexDb
- */
-function _fetchRestaurantsIndexDB() {
-  // Credit https://developers.google.com/web/ilt/pwa/working-with-indexeddb
-
-  let newDB = false // Needed since fetch statments don't work inside idb
-
-  let dbPromise = idb.open('restaurantsDB', 1, upgradeDb => {
-    if (!upgradeDb.objectStoreNames.contains('restaurants')) {
-      let store = upgradeDb.createObjectStore('restaurants', { keyPath: 'id' })
-      newDB = true
-    }
-  })
-
-  return dbPromise.then(db => {
-    if (newDB) {
-      return _updateRestaurantsIndexDB()
-    } else {
-      _updateRestaurantsIndexDB()
-      return db.transaction('restaurants').objectStore('restaurants').getAll().then(restaurants => {
-        return restaurants
-      }).catch(error => { return [] })
-    }
-  }).catch(error => { return [] })
-}
-
-/**
- * Creates/Updates One Restaurant in IndexDb
- */
-function _updateRestaurantIndexDB(id) {
-  return ExternalDB.fetchRestaurantExternal(id).then(restaurant => {
-    if (restaurant.id) {  // don't add bad restaurants to DB
-      idb.open('restaurantsDB', 1).then(db => {
-        let tx = db.transaction('restaurants', 'readwrite')
-        let store = tx.objectStore('restaurants')
-        _addRestaurantToDB(store, restaurant)
-        tx.complete
-      })
-    }
-
-    return restaurant
-  })
-}
-
-/**
- * Creates/Updates Restaurant IndexDb
- */
-function _updateRestaurantsIndexDB() {
-  return ExternalDB.fetchRestaurantsExternal().then(restaurants => {
-    idb.open('restaurantsDB', 1).then(db => {
-      let tx = db.transaction('restaurants', 'readwrite')
-      let store = tx.objectStore('restaurants')
-      restaurants.forEach(restaurant => { _addRestaurantToDB(store, restaurant) })
-      tx.complete
-    })
-
-    return restaurants
-  })
-}
+import DexieDB from './dbdexiehelper.js'
 
 export default {
   /**
@@ -155,7 +55,7 @@ export default {
    */
   fetchRestaurants() {
     if ('indexedDB' in window) {
-      return _fetchRestaurantsIndexDB().then(response => {
+      return DexieDB.fetchRestaurantsIndexDB().then(response => {
         return this.filterRestaurants(response)
       })
     } else {
@@ -170,7 +70,7 @@ export default {
    */
   fetchRestaurantById(id) {
     if ('indexedDB' in window) {
-      return _fetchRestaurantIndexDB(id).then(restaurant => {
+      return DexieDB.fetchRestaurantIndexDB(id).then(restaurant => {
         return restaurant
       })
     } else {
