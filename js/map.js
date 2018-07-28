@@ -3,9 +3,6 @@ import DBHelper from './dbhelper.js'
 let map = null
 let markers = []
 
-/**
- * Map marker for a restaurant.
- */
 function _mapMarkerForRestaurant(restaurant) {
   if (map == null) { return }
   // https://leafletjs.com/reference-1.3.0.html#marker
@@ -16,9 +13,6 @@ function _mapMarkerForRestaurant(restaurant) {
 }
 
 export default {
-  /**
-   * Add markers for current restaurants to the map.
-   */
   addMarkerToMap(restaurant) {
     const marker = _mapMarkerForRestaurant(restaurant)
     marker.on('click', () => { window.location.href = marker.options.url })
@@ -26,9 +20,6 @@ export default {
     return marker
   },
 
-  /**
-   * Initialize leaflet map.
-   */
   initMap(center, zoom) {
     map = L.map('map', {
       center: center,
@@ -47,9 +38,6 @@ export default {
     return map
   },
 
-  /**
-   * Clear current map markers.
-   */
    resetMarkers() {
      markers.forEach(marker => marker.remove())
      markers = []

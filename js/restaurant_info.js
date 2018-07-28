@@ -2,10 +2,8 @@ import DBHelper from './dbhelper.js'
 import Map from './map.js'
 
 let restaurant;
+let reviews = []
 
-/**
- * Create review HTML and add it to the webpage.
- */
 function createReviewHTML(review) {
   const li = document.createElement('li');
   const name = document.createElement('p');
@@ -13,7 +11,7 @@ function createReviewHTML(review) {
   li.appendChild(name);
 
   const date = document.createElement('p');
-  date.innerHTML = review.date;
+  date.innerHTML = new Date(review.updatedAt).toDateString();
   li.appendChild(date);
 
   const rating = document.createElement('p');
@@ -27,9 +25,6 @@ function createReviewHTML(review) {
   return li;
 }
 
-/**
- * Get current restaurant from page URL.
- */
 function fetchRestaurantFromURL() {
   if (restaurant) { return } // restaurant already fetched!
 
@@ -40,6 +35,7 @@ function fetchRestaurantFromURL() {
   DBHelper.fetchRestaurantById(id).then(r => {
     if (r.id) {
       restaurant = r
+      fetchReviews()
       fillRestaurantHTML()
       fillBreadcrumb()
       setMap()
@@ -47,9 +43,13 @@ function fetchRestaurantFromURL() {
   })
 }
 
-/**
- * Add restaurant name to the breadcrumb navigation menu
- */
+function fetchReviews() {
+  DBHelper.fetchReviews(restaurant.id).then(r => {
+    reviews = r
+    fillReviewsHTML()
+  })
+}
+
 function fillBreadcrumb() {
   const breadcrumb = document.getElementById('breadcrumb');
   const li = document.createElement('li');
@@ -58,9 +58,6 @@ function fillBreadcrumb() {
   breadcrumb.appendChild(li);
 }
 
-/**
- * Create restaurant HTML and add it to the webpage
- */
 function fillRestaurantHTML() {
   const name = document.getElementById('restaurant-name');
   name.innerHTML = restaurant.name;
@@ -80,13 +77,8 @@ function fillRestaurantHTML() {
   if (restaurant.operating_hours) {
     fillRestaurantHoursHTML();
   }
-  // fill reviews
-  fillReviewsHTML();
 }
 
-/**
- * Create restaurant operating hours HTML table and add it to the webpage.
- */
 function fillRestaurantHoursHTML(operatingHours = restaurant.operating_hours) {
   const hours = document.getElementById('restaurant-hours');
   for (let key in operatingHours) {
@@ -104,16 +96,13 @@ function fillRestaurantHoursHTML(operatingHours = restaurant.operating_hours) {
   }
 }
 
-/**
- * Create all reviews HTML and add them to the webpage.
- */
-function fillReviewsHTML(reviews = restaurant.reviews) {
+function fillReviewsHTML() {
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h2');
   title.innerHTML = 'Reviews';
   container.appendChild(title);
 
-  if (!reviews) {
+  if (reviews.length < 1) {
     const noReviews = document.createElement('p');
     noReviews.innerHTML = 'No reviews yet!';
     container.appendChild(noReviews);
@@ -126,9 +115,6 @@ function fillReviewsHTML(reviews = restaurant.reviews) {
   container.appendChild(ul);
 }
 
-/**
- * Update Map
- */
 function setMap() {
   Map.initMap(restaurant.latlng, 16)
   Map.addMarkerToMap(restaurant)

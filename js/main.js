@@ -6,9 +6,6 @@ let displayRestaurants = []
 let restaurants = []
 let neighborhoods = []
 
-/**
- * Create restaurant HTML.
- */
 function createRestaurantHTML(restaurant) {
   const container = document.getElementById('restaurants-list')
   const div = document.createElement('div')
@@ -47,9 +44,6 @@ function createRestaurantHTML(restaurant) {
   Map.addMarkerToMap(restaurant)
 }
 
-/**
- * Set cuisines HTML.
- */
 function fillCuisinesHTML() {
   const select = document.getElementById('cuisines-select');
 
@@ -61,9 +55,6 @@ function fillCuisinesHTML() {
   });
 }
 
-/**
- * Set neighborhoods HTML.
- */
 function fillNeighborhoodsHTML() {
   const select = document.getElementById('neighborhoods-select');
   neighborhoods.forEach(neighborhood => {
@@ -74,17 +65,11 @@ function fillNeighborhoodsHTML() {
   });
 }
 
-/**
- * Create all restaurants HTML and add them to the webpage.
- */
 function fillRestaurantsHTML() {
   resetRestaurants()
   displayRestaurants.forEach(restaurant => { createRestaurantHTML(restaurant) })
 }
 
-/**
- * Update restaurants, cuisines, neighborhoods, and map
- */
 function fillVariables() {
   DBHelper.fetchRestaurants().then(response => {
     cuisines = response.cuisines
@@ -97,9 +82,6 @@ function fillVariables() {
   })
 }
 
-/**
- * Clear current restaurants, their HTML and remove their map markers.
- */
 function resetRestaurants() {
   const ul = document.getElementById('restaurants-list');
   ul.innerHTML = '';
@@ -107,9 +89,6 @@ function resetRestaurants() {
   Map.resetMarkers()
 }
 
-/**
- * Update page and map for current restaurants.
- */
 function updateRestaurants() {
   const cSelect = document.getElementById('cuisines-select');
   const nSelect = document.getElementById('neighborhoods-select');
