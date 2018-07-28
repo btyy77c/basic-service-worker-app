@@ -1,83 +1,10 @@
 /* Common database helper functions. */
 
 import ExternalDB from './dbexternalhelper.js'
+import DixieDB from './dbdixiehelper.js'
 
 const dbPromise = new Dexie('restaurantsDB')
 const MIN_NUMBER_OF_RESTAURANTS = 5
-
-/**
- * Add/Update Restaurant IndexDb
- */
-function _addRestaurantToDB(restaurant) {
-  dbPromise.restaurants.put({ id: restaurant.id, address: restaurant.address,
-    cuisine_type: restaurant.cuisine_type, latlng: restaurant.latlng, name: restaurant.name,
-    neighborhood: restaurant.neighborhood, operating_hours: restaurant.operating_hours,
-    photograph: restaurant.photograph, reviews: restaurant.reviews })
-}
-
-/**
- * Add/Update Stores in IndexDB
- */
-function _initializeDixieStores() {
-  dbPromise.version(1).stores({
-    restaurants: 'id,address,cuisine_type,latlng,name,neighborhood,operating_hours,photograph',
-    reviews: 'id'
-  })
-}
-
-/**
- * Obtain one restaurant from IndexDb
- */
-function _fetchRestaurantIndexDB(id) {
-  _initializeDixieStores()
-
-  return dbPromise.restaurants.get(id).then(restaurant => {
-    if (restaurant == undefined) {
-      return _updateRestaurantIndexDB(id)
-    } else {
-      _updateRestaurantIndexDB(id)
-      return restaurant
-    }
-  }).catch(error => { return _updateRestaurantIndexDB(id) })
-}
-
-/**
- * Obtain restaurants from IndexDb
- */
-function _fetchRestaurantsIndexDB() {
-  _initializeDixieStores()
-
-  return dbPromise.restaurants.toArray().then(restaurants => {
-    if (restaurants.length < MIN_NUMBER_OF_RESTAURANTS) {
-      return _updateRestaurantsIndexDB()
-    } else {
-      _updateRestaurantsIndexDB()
-      return restaurants
-    }
-  }).catch(error => { return [] })
-}
-
-/**
- * Creates/Updates One Restaurant in IndexDb
- */
-function _updateRestaurantIndexDB(id) {
-  return ExternalDB.fetchRestaurantExternal(id).then(restaurant => {
-    if (restaurant.id) {  // don't add bad restaurants to DB
-      _addRestaurantToDB(restaurant)
-    }
-    return restaurant
-  })
-}
-
-/**
- * Creates/Updates All Restaurants in IndexDb
- */
-function _updateRestaurantsIndexDB() {
-  return ExternalDB.fetchRestaurantsExternal().then(restaurants => {
-    restaurants.forEach(restaurant => { _addRestaurantToDB(restaurant) })
-    return restaurants
-  })
-}
 
 export default {
   /**
@@ -131,7 +58,7 @@ export default {
    */
   fetchRestaurants() {
     if ('indexedDB' in window) {
-      return _fetchRestaurantsIndexDB().then(response => {
+      return DixieDB.fetchRestaurantsIndexDB().then(response => {
         return this.filterRestaurants(response)
       })
     } else {
@@ -146,7 +73,7 @@ export default {
    */
   fetchRestaurantById(id) {
     if ('indexedDB' in window) {
-      return _fetchRestaurantIndexDB(id).then(restaurant => {
+      return DixieDB.fetchRestaurantIndexDB(id).then(restaurant => {
         return restaurant
       })
     } else {
