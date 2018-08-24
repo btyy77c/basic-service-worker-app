@@ -129,7 +129,7 @@
 	visibility: hidden;
 }
 
-.favorite_toggle {
+#favorite_toggle {
   background-color: #ccc;
   border-radius: 20px;
   color: #fff;
@@ -139,7 +139,7 @@
   width: 90%;
 }
 
-.favorite_toggle label {
+#favorite_label {
   background-color: #333;
   border-radius: 10px;
   color: #fff;
