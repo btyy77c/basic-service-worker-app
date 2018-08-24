@@ -42,6 +42,12 @@
     <!-- Beginning restaurant -->
     <section class='responsive' id="restaurant-container" aria-label='Restaurant Information'>
       <h2 id="restaurant-name"></h2>
+
+      <div class='favorite_toggle'>
+        <input type="checkbox" name="favorite_restaraunt" id="favorite">
+        <label for="favorite">Add Restaurant To Favorites</label>
+      </div>
+
       <img id="restaurant-img">
       <p id="restaurant-cuisine"></p>
       <p id="restaurant-address"></p>
@@ -56,11 +62,6 @@
     <!-- End map -->
 
     <!-- Beginning reviews -->
-    <section id="reviews-container" aria-label='Restaurant Reviews'>
-      <ul id="reviews-list" aria-label='List of Reviews'></ul>
-    </section>
-    <!-- End reviews -->
-
     <section id="create-review" aria-label='Create Review'>
       <hr/>
       <h2>Create New Review</h4>
@@ -83,6 +84,11 @@
         <button>Add Review</button>
       </form>
     </section>
+
+    <section id="reviews-container" aria-label='Restaurant Reviews'>
+      <ul id="reviews-list" aria-label='List of Reviews'></ul>
+    </section>
+    <!-- End reviews -->
   </main>
   <!-- End main -->
 

@@ -123,6 +123,30 @@
   width: 85%;
 }
 
+#favorite {
+  height: 0;
+	width: 0;
+	visibility: hidden;
+}
+
+.favorite_toggle {
+  background-color: #ccc;
+  border-radius: 20px;
+  color: #fff;
+  cursor: pointer;
+  margin-bottom: 10px;
+  padding: 5px 0;
+  width: 90%;
+}
+
+.favorite_toggle label {
+  background-color: #333;
+  border-radius: 10px;
+  color: #fff;
+  margin-left: -5px;
+  padding: 5px 10px;
+}
+
 /* ====================== Reviews ====================== */
 #create-review form {
   text-align: left;
