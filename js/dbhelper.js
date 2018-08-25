@@ -92,6 +92,12 @@ export default {
     return reviews.sort((a, b) => { return new Date(b.createdAt) - new Date(a.createdAt) })
   },
 
+  updateRestaurantFavorite(restaurant_id, is_favorite) {
+    return ExternalDB.putRestaurantFavorite(restaurant_id, is_favorite).then(restaurant => {
+      return restaurant
+    })
+  },
+
   urlForRestaurant(restaurant) {
     return (`./restaurant.html?id=${restaurant.id}`);
   }

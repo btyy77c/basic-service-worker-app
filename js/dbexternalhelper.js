@@ -41,5 +41,18 @@ export default {
         return { error: 'Failed to save review' }
       }
     }).catch(error => { return { error: error } })
+  },
+
+  putRestaurantFavorite(id, is_favorite) {
+    return fetch(`${DATABASE_URL}/restaurants/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify({ is_favorite: is_favorite })
+    }).then(response => {
+      if (response.status == 201) {
+        return response.json().then(body => { return body })
+      } else {
+        return { error: 'Failed to update favorite' }
+      }
+    }).catch(error => { return { error: error } })
   }
 }
