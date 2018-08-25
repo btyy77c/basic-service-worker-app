@@ -94,11 +94,11 @@ export default {
 
   updateRestaurantFavorite(restaurant) {
     if ('indexedDB' in window) {
-      return DexieDB.putRestaurantFavorite(restaurant).then(restaurant => {
+      return DexieDB.putRestaurant(restaurant).then(restaurant => {
         return restaurant
       })
     } else {
-      return ExternalDB.putRestaurantFavorite(restaurant).then(restaurant => {
+      return ExternalDB.putRestaurant(restaurant).then(restaurant => {
         return restaurant
       })
     }

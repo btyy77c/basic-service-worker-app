@@ -3,6 +3,7 @@
 import ExternalDB from './dbexternalhelper.js'
 
 const dbPromise = new Dexie('restaurantsDB')
+const DB_STORE_VERSION = 2
 const MIN_NUMBER_OF_RESTAURANTS = 5
 const MIN_NUMBER_OF_REVIEWS = 1
 
@@ -21,19 +22,28 @@ function _addReviewToDB(review, matchesExternalDB = true) {
 }
 
 function _initializeDixieStores() {
-  dbPromise.version(1).stores({
+  dbPromise.version(DB_STORE_VERSION).stores({
     restaurants: 'id,address,cuisine_type,latlng,name,neighborhood,operating_hours,photograph,matches_external_db',
     reviews: 'id,createdAt,comments,name,rating,restaurant_id,updatedAt,matches_external_db'
   })
 }
 
-function _updateRestaurantIndexDB(id) {
-  return ExternalDB.fetchRestaurantExternal(id).then(restaurant => {
-    if (restaurant.id) {  // don't add bad restaurants to DB
-      _addRestaurantToDB(restaurant)
-    }
-    return restaurant
-  })
+function _updateRestaurantIndexDB(dexieRestaurant) {
+  if (dexieRestaurant.matches_external_db)  {
+    return ExternalDB.fetchRestaurantExternal(dexieRestaurant.id).then(restaurant => {
+      if (restaurant.id) {  // don't add bad restaurants to DB
+        _addRestaurantToDB(restaurant)
+      }
+      return restaurant
+    })
+  } else {
+    return ExternalDB.putRestaurant(dexieRestaurant).then(restaurant => {
+      if (restaurant.id) {  // don't add bad restaurants to DB
+        _addRestaurantToDB(restaurant)
+      }
+      return restaurant
+    })
+  }
 }
 
 function _updateRestaurantsIndexDB() {
@@ -56,9 +66,9 @@ export default {
 
     return dbPromise.restaurants.get(id).then(restaurant => {
       if (restaurant == undefined) {
-        return _updateRestaurantIndexDB(id)
+        return _updateRestaurantIndexDB({ id: id, matches_external_db: true })
       } else {
-        _updateRestaurantIndexDB(id)
+        _updateRestaurantIndexDB(restaurant)
         return restaurant
       }
     }).catch(error => { return _updateRestaurantIndexDB(id) })
@@ -68,6 +78,10 @@ export default {
     _initializeDixieStores()
 
     return dbPromise.restaurants.toArray().then(restaurants => {
+      restaurants.forEach(restaurant => {
+        if (restaurant.matches_external_db == false) { _updateRestaurantIndexDB(restaurant) }
+      })
+
       if (restaurants.length < MIN_NUMBER_OF_RESTAURANTS) {
         return _updateRestaurantsIndexDB()
       } else {
@@ -79,6 +93,10 @@ export default {
 
   fetchReviews(restaurantId) {
     return dbPromise.reviews.where('restaurant_id').equals(restaurantId).toArray().then(reviews => {
+      reviews.forEach(review => {
+        if (review.matches_external_db == false) { this.postReview(review) }
+      })
+
       if (reviews.length < MIN_NUMBER_OF_REVIEWS) {
         return _updateReviewsIndexDB(restaurantId)
       } else {
@@ -105,8 +123,8 @@ export default {
     })
   },
 
-  putRestaurantFavorite(restaurantUpdate) {
-    return ExternalDB.putRestaurantFavorite(restaurantUpdate).then(restaurant => {
+  putRestaurant(restaurantUpdate) {
+    return ExternalDB.putRestaurant(restaurantUpdate).then(restaurant => {
       if (restaurant.id) {
         _addRestaurantToDB(restaurant)
         return restaurant
