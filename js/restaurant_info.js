@@ -35,10 +35,10 @@ function fetchRestaurantFromURL() {
   DBHelper.fetchRestaurantById(id).then(r => {
     if (r.id) {
       restaurant = r
-      updateFavorite()
       fetchReviews()
-      fillRestaurantHTML()
+      fillFavoriteHTML()
       fillBreadcrumb()
+      fillRestaurantHTML()
       setMap()
     }
   })
@@ -57,6 +57,17 @@ function fillBreadcrumb() {
   li.innerHTML = restaurant.name;
   li.setAttribute('aria-current', 'page')
   breadcrumb.appendChild(li);
+}
+
+function fillFavoriteHTML() {
+  if (restaurant.is_favorite == true) {
+    document.getElementById('favorite_label').innerHTML = 'Remove From Favorites'
+    document.getElementById('favorite_toggle').setAttribute('style', 'text-align: right;')
+  } else {
+    document.getElementById('favorite_label').innerHTML = 'Add To Favorites'
+    document.getElementById('favorite_toggle').setAttribute('style', 'text-align: left;')
+  }
+
 }
 
 function fillRestaurantHTML() {
@@ -136,17 +147,6 @@ function submitReviewForm() {
   })
 }
 
-function updateFavorite() {
-  if (restaurant.is_favorite == true) {
-    document.getElementById('favorite_label').innerHTML = 'Remove From Favorites'
-    document.getElementById('favorite_toggle').setAttribute('style', 'text-align: left;')
-  } else {
-    document.getElementById('favorite_label').innerHTML = 'Add To Favorites'
-    document.getElementById('favorite_toggle').setAttribute('style', 'text-align: right;')
-  }
-
-}
-
 
 document.addEventListener('DOMContentLoaded', () => {
   fetchRestaurantFromURL()
@@ -159,7 +159,7 @@ document.getElementById('create-review-form').addEventListener('submit', e => {
 
 document.getElementById('favorite_toggle').addEventListener('click', e => {
   restaurant.is_favorite = !restaurant.is_favorite
-  updateFavorite()
+  fillFavoriteHTML()
 })
 
 export default {}
