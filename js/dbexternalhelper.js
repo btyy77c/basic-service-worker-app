@@ -43,7 +43,7 @@ export default {
     }).catch(error => { return { error: error } })
   },
 
-  putRestaurantFavorite(restaurant) {
+  putRestaurant(restaurant) {
     return fetch(`${DATABASE_URL}/restaurants/${restaurant.id}`, {
       method: 'PUT',
       body: JSON.stringify({ is_favorite: restaurant.is_favorite })
