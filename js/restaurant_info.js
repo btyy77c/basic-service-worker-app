@@ -11,7 +11,7 @@ function createReviewHTML(review) {
   li.appendChild(name);
 
   const date = document.createElement('p');
-  date.innerHTML = new Date(review.updatedAt).toDateString();
+  date.innerHTML = new Date(review.createdAt).toDateString();
   li.appendChild(date);
 
   const rating = document.createElement('p');
@@ -36,8 +36,9 @@ function fetchRestaurantFromURL() {
     if (r.id) {
       restaurant = r
       fetchReviews()
-      fillRestaurantHTML()
+      fillFavoriteHTML()
       fillBreadcrumb()
+      fillRestaurantHTML()
       setMap()
     }
   })
@@ -56,6 +57,17 @@ function fillBreadcrumb() {
   li.innerHTML = restaurant.name;
   li.setAttribute('aria-current', 'page')
   breadcrumb.appendChild(li);
+}
+
+function fillFavoriteHTML() {
+  if (restaurant.is_favorite == true) {
+    document.getElementById('favorite_label').innerHTML = 'Remove From Favorites'
+    document.getElementById('favorite_toggle').setAttribute('style', 'text-align: right;')
+  } else {
+    document.getElementById('favorite_label').innerHTML = 'Add To Favorites'
+    document.getElementById('favorite_toggle').setAttribute('style', 'text-align: left;')
+  }
+
 }
 
 function fillRestaurantHTML() {
@@ -120,6 +132,35 @@ function setMap() {
   Map.addMarkerToMap(restaurant)
 }
 
+function submitReviewForm() {
+  let newReview = {
+    name: document.getElementById('name').value || 'Name Not Provided',
+    rating: document.getElementById('rating').value,
+    comments: document.getElementById('comment').value || 'No Comment Provided',
+    restaurant_id: restaurant.id,
+    createdAt: Date.now(),
+    updatedAt: Date.now()
+  }
 
-document.addEventListener('DOMContentLoaded', () => { fetchRestaurantFromURL() })
+  DBHelper.postReview(newReview).then(review => {
+    if (review.id) { location.href = location.href }
+  })
+}
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  fetchRestaurantFromURL()
+})
+
+document.getElementById('create-review-form').addEventListener('submit', e => {
+  e.preventDefault()
+  submitReviewForm()
+})
+
+document.getElementById('favorite_toggle').addEventListener('click', e => {
+  restaurant.is_favorite = !restaurant.is_favorite
+  fillFavoriteHTML()
+  DBHelper.updateRestaurantFavorite(restaurant)
+})
+
 export default {}

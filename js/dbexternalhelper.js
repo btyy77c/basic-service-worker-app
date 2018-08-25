@@ -29,4 +29,30 @@ export default {
       } else { return [] }
     }).catch(error => { return [] })
   },
+
+  postReview(newReview) {
+    return fetch(`${DATABASE_URL}/reviews`, {
+      method: 'POST',
+      body: JSON.stringify(newReview)
+    }).then(response => {
+      if (response.status == 201) {
+        return response.json().then(body => { return body })
+      } else {
+        return { error: 'Failed to save review' }
+      }
+    }).catch(error => { return { error: error } })
+  },
+
+  putRestaurantFavorite(restaurant) {
+    return fetch(`${DATABASE_URL}/restaurants/${restaurant.id}`, {
+      method: 'PUT',
+      body: JSON.stringify({ is_favorite: restaurant.is_favorite })
+    }).then(response => {
+      if (response.status == 200) {
+        return response.json().then(body => { return body })
+      } else {
+        return { error: 'Failed to update favorite' }
+      }
+    }).catch(error => { return { error: error } })
+  }
 }

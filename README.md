@@ -4,7 +4,8 @@
 
 ### Description
 
-This is a basic restaurant application.  The original code was provided by Udacity and can be found here: https://github.com/udacity/mws-restaurant-stage-1. It uses a Service Worker to cache CSS, JS, images, and HTML files.  It also uses indexDB to store database calls locally.
+This is a basic restaurant application.  The original code was provided by Udacity and can be found here: https://github.com/udacity/mws-restaurant-stage-1. It uses a Service Worker to cache CSS, JS, images, and HTML files.  
+It also uses indexDB to store database calls locally.
 
 ### How do I setup the app?
 

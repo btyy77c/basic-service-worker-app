@@ -111,7 +111,8 @@
   padding: 0;
 }
 
-#reviews-list li {
+#reviews-list li,
+#create-review form {
   background-color: #fff;
   border: 2px solid #f3f3f3;
   font-size: 0.8em;
@@ -120,4 +121,66 @@
   margin: 0 auto 30px;
   padding: 0 20px 20px;
   width: 85%;
+}
+
+#favorite {
+  height: 0;
+	width: 0;
+	visibility: hidden;
+}
+
+#favorite_toggle {
+  background-color: #ccc;
+  border-radius: 20px;
+  color: #fff;
+  cursor: pointer;
+  margin-bottom: 10px;
+  padding: 5px 0;
+  width: 90%;
+}
+
+#favorite_label {
+  background-color: #333;
+  border-radius: 10px;
+  color: #fff;
+  margin-left: -5px;
+  padding: 5px 10px;
+}
+
+/* ====================== Reviews ====================== */
+#create-review form {
+  text-align: left;
+}
+
+#create-review label {
+  display: block;
+  margin: 15px 0 5px 0;
+}
+
+#create-review input,
+#create-review textarea {
+  border: 1px solid #444;
+  font-size: 1em;
+  margin: 5px auto;
+  padding: 5px;
+  width: 90%;
+}
+
+#create-review select {
+  background-color: #fff;
+  border: 1px solid #444;
+  font-size: 1em;
+  width: 110px;
+}
+
+#create-review button {
+  background-color: #fda429;
+  color: #322008;
+  display: inline-block;
+  font-size: 1em;
+  margin: 10px 0;
+  padding: 8px 30px 10px;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
 }
