@@ -92,10 +92,16 @@ export default {
     return reviews.sort((a, b) => { return new Date(b.createdAt) - new Date(a.createdAt) })
   },
 
-  updateRestaurantFavorite(restaurant_id, is_favorite) {
-    return ExternalDB.putRestaurantFavorite(restaurant_id, is_favorite).then(restaurant => {
-      return restaurant
-    })
+  updateRestaurantFavorite(restaurant) {
+    if ('indexedDB' in window) {
+      return DexieDB.putRestaurantFavorite(restaurant).then(restaurant => {
+        return restaurant
+      })
+    } else {
+      return ExternalDB.putRestaurantFavorite(restaurant).then(restaurant => {
+        return restaurant
+      })
+    }
   },
 
   urlForRestaurant(restaurant) {

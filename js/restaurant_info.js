@@ -160,7 +160,7 @@ document.getElementById('create-review-form').addEventListener('submit', e => {
 document.getElementById('favorite_toggle').addEventListener('click', e => {
   restaurant.is_favorite = !restaurant.is_favorite
   fillFavoriteHTML()
-  DBHelper.updateRestaurantFavorite(restaurant.id, restaurant.is_favorite)
+  DBHelper.updateRestaurantFavorite(restaurant)
 })
 
 export default {}

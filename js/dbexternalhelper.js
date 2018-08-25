@@ -43,12 +43,12 @@ export default {
     }).catch(error => { return { error: error } })
   },
 
-  putRestaurantFavorite(id, is_favorite) {
-    return fetch(`${DATABASE_URL}/restaurants/${id}`, {
+  putRestaurantFavorite(restaurant) {
+    return fetch(`${DATABASE_URL}/restaurants/${restaurant.id}`, {
       method: 'PUT',
-      body: JSON.stringify({ is_favorite: is_favorite })
+      body: JSON.stringify({ is_favorite: restaurant.is_favorite })
     }).then(response => {
-      if (response.status == 201) {
+      if (response.status == 200) {
         return response.json().then(body => { return body })
       } else {
         return { error: 'Failed to update favorite' }

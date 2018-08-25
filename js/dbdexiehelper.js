@@ -6,23 +6,24 @@ const dbPromise = new Dexie('restaurantsDB')
 const MIN_NUMBER_OF_RESTAURANTS = 5
 const MIN_NUMBER_OF_REVIEWS = 1
 
-function _addRestaurantToDB(restaurant) {
+function _addRestaurantToDB(restaurant, matchesExternalDB = true) {
   dbPromise.restaurants.put({ id: restaurant.id, address: restaurant.address,
     cuisine_type: restaurant.cuisine_type, latlng: restaurant.latlng, name: restaurant.name,
     neighborhood: restaurant.neighborhood, operating_hours: restaurant.operating_hours,
-    photograph: restaurant.photograph, reviews: restaurant.reviews })
+    photograph: restaurant.photograph, reviews: restaurant.reviews,
+    matches_external_db:  matchesExternalDB })
 }
 
-function _addReviewToDB(review) {
+function _addReviewToDB(review, matchesExternalDB = true) {
   dbPromise.reviews.put({ id: review.id, comments: review.comments, createdAt: review.createdAt,
     updatedAt: review.updatedAt, name: review.name, rating: review.rating,
-    restaurant_id: review.restaurant_id })
+    restaurant_id: review.restaurant_id, matches_external_db:  matchesExternalDB })
 }
 
 function _initializeDixieStores() {
   dbPromise.version(1).stores({
-    restaurants: 'id,address,cuisine_type,latlng,name,neighborhood,operating_hours,photograph',
-    reviews: 'id,createdAt,comments,name,rating,restaurant_id,updatedAt'
+    restaurants: 'id,address,cuisine_type,latlng,name,neighborhood,operating_hours,photograph,matches_external_db',
+    reviews: 'id,createdAt,comments,name,rating,restaurant_id,updatedAt,matches_external_db'
   })
 }
 
@@ -94,13 +95,28 @@ export default {
         return review
       } else {
         newReview.id = 'temp'
-        _addReviewToDB(newReview)
+        _addReviewToDB(newReview, false)
         return newReview
       }
     }).catch(error => {
       newReview.id = 'temp'
-      _addReviewToDB(newReview)
+      _addReviewToDB(newReview, false)
       return newReview
+    })
+  },
+
+  putRestaurantFavorite(restaurantUpdate) {
+    return ExternalDB.putRestaurantFavorite(restaurantUpdate).then(restaurant => {
+      if (restaurant.id) {
+        _addRestaurantToDB(restaurant)
+        return restaurant
+      } else {
+        _addRestaurantToDB(restaurantUpdate, false)
+        return restaurantUpdate
+      }
+    }).catch(error => {
+      _addRestaurantToDB(restaurantUpdate, false)
+      return restaurantUpdate
     })
   }
 }
